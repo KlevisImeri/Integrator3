@@ -4,10 +4,14 @@ package ExpressionEvaluator;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.tree.TreeNode;
+
 public class Tree<T> {
     private List<Tree<T>> children = new ArrayList<Tree<T>>();
     private Tree<T> parent = null;
     private T data = null;
+
+    public Tree() {}
 
     public Tree(T data) {
         this.data = data;
@@ -23,7 +27,7 @@ public class Tree<T> {
     }
 
     public void setParent(Tree<T> parent) {
-        parent.addChild(this);
+        //parent.addChild(this);
         this.parent = parent;
     }
 
@@ -56,6 +60,21 @@ public class Tree<T> {
 
     public void removeParent() {
         this.parent = null;
+    }
+
+    public void print() {
+        print("", true);
+    }
+
+    private void print(String prefix, boolean isTail) {
+        System.out.println(prefix + (isTail ? "└── " : "├── ") + data);
+        List<Tree<T>> children = this.getChildren();
+        for (int i = 0; i < children.size() - 1; i++) {
+            children.get(i).print(prefix + (isTail ? "    " : "│   "), false);
+        }
+        if (!children.isEmpty()) {
+            children.get(children.size() - 1).print(prefix + (isTail ? "    " : "│   "), true);
+        }
     }
 }
 

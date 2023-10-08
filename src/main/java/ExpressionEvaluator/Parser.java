@@ -1,42 +1,44 @@
 package ExpressionEvaluator;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 public class Parser extends Lexer {
-    //Tree<Token> tree = new Tree<Token>();
-    List<Token> output = new ArrayList<>();
-    Stack<Token> opStack = new Stack<>();
+    protected Tree<Token> tree = new Tree<Token>();
+    protected Stack<Token> tokensRPN = new Stack<>(); // Changed to Stack
+    protected Stack<Token> opStack = new Stack<>();
 
     public Parser(String expression) {
         super(expression);
-        try{
+        try {
             tokenize();
             shuntingYard();
-        } catch(Exception e) {
-           e.printStackTrace();
+            parseTokens(tree);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        
     }
 
     private boolean tokenHasLowerOrEqualPrecedenceThanTheTopOperatorInStack(Token token) {
         return operatorPrecedence.get(token.getValue().charAt(0)) <= operatorPrecedence.get(opStack.peek().getValue().charAt(0));
     }
+
     private boolean isNextOperatorPopable(Token token) {
         return opStack.peek().isOperator() && tokenHasLowerOrEqualPrecedenceThanTheTopOperatorInStack(token);
     }
-    private boolean isNextPopable(Token token){
+
+    private boolean isNextPopable(Token token) {
         return isNextOperatorPopable(token) || opStack.peek().isFunction();
     }
+
     private boolean isNextToRightParenAFunction(Token token) {
         return token.isParenRight() && !opStack.isEmpty() && opStack.peek().isFunction();
     }
-    private boolean isNextToRightParenEmtyOrLeftParen(Token token) {
-        return token.isParenRight()  && (opStack.isEmpty() || opStack.peek().isParenLeft());
-    }
-    public void shuntingYard() throws Exception {
 
+    private boolean isNextToRightParenEmtyOrLeftParen(Token token) {
+        return token.isParenRight() && (opStack.isEmpty() || opStack.peek().isParenLeft());
+    }
+
+    public void shuntingYard() throws Exception {
         int numberFunctions = 0;
 
         for (Token token : tokenList) {
@@ -44,8 +46,8 @@ public class Parser extends Lexer {
                 case NUMBER:
                 case VARIABLE:
                 case EULER:
-                case PI: 
-                    output.add(token);
+                case PI:
+                    tokensRPN.push(token); // Push to Stack
                     break;
                 case OPERATOR:
                     // If the token is an operator, pop operators from the stack to the output queue
@@ -53,7 +55,7 @@ public class Parser extends Lexer {
                     // -> isNextOperatorPopable(); It can also be a function -> isNextPopable();
                     while (!opStack.isEmpty()) {
                         if (isNextPopable(token)) {
-                            output.add(opStack.pop());
+                            tokensRPN.push(opStack.pop()); // Push to Stack
                         } else {
                             break;
                         }
@@ -77,14 +79,14 @@ public class Parser extends Lexer {
                             opStack.pop(); // Discard the left parenthesis
                             break;
                         } else if (topOperator.isFunction()) {
-                            output.add(opStack.pop()); // Pop the function from the stack and enqueue it
+                            tokensRPN.push(opStack.pop()); // Pop the function from the stack and enqueue it
                         } else {
-                            output.add(opStack.pop());
+                            tokensRPN.push(opStack.pop()); // Push to Stack
                         }
                     }
 
                     if (isNextToRightParenAFunction(token)) {
-                        output.add(opStack.pop()); // Pop the function from the stack and enqueue it
+                        tokensRPN.push(opStack.pop()); // Pop the function from the stack and enqueue it
                     } else if (isNextToRightParenEmtyOrLeftParen(token)) {
                         throw new IllegalArgumentException("Mismatched parentheses");
                     }
@@ -100,20 +102,56 @@ public class Parser extends Lexer {
             Token topOperator = opStack.pop();
             if (topOperator.isParenLeft() || topOperator.isParenRight()) {
                 if (numberFunctions == 0) {
-                    throw new RuntimeException("Mismatched parentheses");
+                    throw new IllegalArgumentException("Mismatched parentheses");
                 } else {
                     numberFunctions--;
                 }
             }
-            output.add(topOperator);
+            tokensRPN.push(topOperator); // Push to Stack
         }
-
     }
 
     public void printTokensInRPN() {
-        for (Token token : output) {
-            System.out.print(token+" ");
+        for (Token token : tokensRPN) {
+            System.out.print(token + " ");
         }
         System.out.println();
-    }   
+    }
+
+    public void parseTokens(Tree<Token> node) throws IllegalArgumentException {
+        // Nothing left
+        if (tokensRPN.isEmpty()) {
+            return;
+        }
+
+        node.setData(tokensRPN.pop());
+
+        // Creating the tree
+        int numChildren = 0;
+        if (node.getData().isFunction()) {
+            numChildren = functionArity.get(node.getData().getValue());
+        } else if (node.getData().isOperator()) {
+            numChildren = 2;
+        } else {
+            return;
+        }
+
+        for (int i = 0; i < numChildren; i++) {
+            if (tokensRPN.isEmpty()) {
+                throw new IllegalArgumentException("Not enough tokens for expression!");
+            }
+
+            // add to the node.
+            Tree<Token> child = new Tree<>(); 
+            node.addChild(child);
+
+            parseTokens(child);
+        }
+    }
+
+    public void printTree()  {
+        tree.print();
+    }
 }
+
+

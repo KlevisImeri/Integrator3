@@ -196,7 +196,7 @@ public class Lexer {
         return ++i;
     }
 
-    public void tokenize() throws Exception {
+    protected void tokenize() throws Exception {
         // Preparation
         tokenList.clear();
         Paren_left = 0;
