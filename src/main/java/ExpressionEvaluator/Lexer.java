@@ -7,19 +7,19 @@ import java.util.Map;
 
 public class Lexer {
     //store the expression 
-    private String expression;
+    protected String expression;
     //for counting the number of parantheses
     int Paren_left = 0;
     int Paren_right = 0;
     //store the TokenList                                                  
-    private List<Token> tokenList = new ArrayList<>();                                  
+    protected List<Token> tokenList = new ArrayList<>();                                  
     //To store the precedence nuber of each operator
-    private final Map<Character, Integer> operatorPrecedence = new HashMap<>();         
+    protected final Map<Character, Integer> operatorPrecedence = new HashMap<>();         
     //To sore the arity(how many parameters does it take) of each function.
     //Example: 
     // - sin(x)     has arrity 1
     // - log(b,x)   has arrity 2
-    private final Map<String, Integer> functionArity = new HashMap<>();
+    protected final Map<String, Integer> functionArity = new HashMap<>();
 
 
     //Constructor | Setters | Getters
@@ -291,7 +291,7 @@ public class Lexer {
         }
     }
     
-    public void print() {
+    public void printTokens() {
         System.out.println("Lexer{");
         System.out.println(" Function: " + expression);
         System.out.print(" Tokens: {");
