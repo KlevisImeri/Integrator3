@@ -23,7 +23,7 @@ public class Lexer {
 
 
     //Constructor | Setters | Getters
-    private Lexer() {
+    public Lexer() {
         // Initialize operator operatorPrecedence
         operatorPrecedence.put('+', 1);
         operatorPrecedence.put('-', 1);
@@ -36,14 +36,16 @@ public class Lexer {
         functionArity.put("cos", 1);
         functionArity.put("tan", 1);
         functionArity.put("log", 2);
+
+        setExpression(null);
     }
 
     public Lexer(String expression) {
         this();
-        this.expression = expression;
+        setExpression(expression);
     }
 
-    public void setString(String expression) {
+    public void setExpression(String expression) {
         this.expression = expression;
     }
 

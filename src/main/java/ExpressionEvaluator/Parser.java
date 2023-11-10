@@ -2,20 +2,30 @@ package ExpressionEvaluator;
 
 import java.util.Stack;
 
+import javax.activity.InvalidActivityException;
+
 public class Parser extends Lexer {
     protected Tree<Token> tree = new Tree<Token>();
     protected Stack<Token> tokensRPN = new Stack<>(); // Changed to Stack
     protected Stack<Token> opStack = new Stack<>();
 
-    public Parser(String expression) {
+    public Parser() {}
+
+    public Parser(String expression) throws Exception {
         super(expression);
-        try {
-            tokenize();
-            shuntingYard();
-            parseTokens(tree);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        tokenize();
+        shuntingYard();
+        parseTokens(tree);
+    }
+
+    public void parse(String expression) throws Exception {
+        tree = new Tree<Token>();
+        tokensRPN = new Stack<>(); 
+        opStack = new Stack<>();
+        setExpression(expression);
+        tokenize();
+        shuntingYard();
+        parseTokens(tree);
     }
 
     private boolean tokenHasLowerOrEqualPrecedenceThanTheTopOperatorInStack(Token token) {
@@ -111,21 +121,14 @@ public class Parser extends Lexer {
         }
     }
 
-    public void printTokensInRPN() {
-        for (Token token : tokensRPN) {
-            System.out.print(token + " ");
-        }
-        System.out.println();
-    }
-
     public void parseTokens(Tree<Token> node) throws IllegalArgumentException {
         // Nothing left
         if (tokensRPN.isEmpty()) {
             return;
         }
-
+        
         node.setData(tokensRPN.pop());
-
+        
         // Creating the tree
         int numChildren = 0;
         if (node.getData().isFunction()) {
@@ -135,20 +138,89 @@ public class Parser extends Lexer {
         } else {
             return;
         }
-
+        
         for (int i = 0; i < numChildren; i++) {
             if (tokensRPN.isEmpty()) {
                 throw new IllegalArgumentException("Not enough tokens for expression!");
             }
-
+            
             // add to the node.
             Tree<Token> child = new Tree<>(); 
             node.addChild(child);
-
+            
             parseTokens(child);
         }
     }
 
+    public double eval(double x) throws Exception {
+        return evaluate(x, tree);
+    }
+
+    private double evaluate(double x, Tree<Token> node) throws NullPointerException, IllegalArgumentException {
+        String value = node.getData().getValue();
+        double left, right;
+
+        switch (node.getData().getType()) {
+            case NUMBER:
+                return Double.parseDouble(value);
+
+            case OPERATOR:
+                right = evaluate(x, node.getChildren().get(0));
+                left = evaluate(x, node.getChildren().get(1));
+
+                switch (value.charAt(0)) {
+                    case '+':
+                        return left + right;
+                    case '-':
+                        return left - right;
+                    case '*':
+                        return left * right;
+                    case '/':
+                        return left / right;
+                    case '^':
+                        return Math.pow(left, right);
+                    default:
+                        throw new IllegalArgumentException("Operator '" + value + "' is not defined!");
+                }
+
+            case FUNCTION:
+                right = evaluate(x, node.getChildren().get(0));
+
+                switch (value) {
+                    case "sin":
+                        return Math.sin(right);
+                    case "cos":
+                        return Math.cos(right);
+                    case "tan":
+                        return Math.tan(right);
+                    case "log":
+                        left = evaluate(x, node.getChildren().get(1));
+                        return Math.log(left) / Math.log(right);
+                    default:
+                        throw new IllegalArgumentException("Function '" + value + "' is not defined!");
+                }
+
+            case VARIABLE:
+                return x;
+
+            case EULER:
+                return Math.E;
+
+            case PI:
+                return Math.PI;
+
+            default:
+                throw new IllegalArgumentException("Unknown token type!");
+        }
+    }
+
+    public void printTokensInRPN() {
+        for (Token token : tokensRPN) {
+            System.out.print(token + " ");
+        }
+        System.out.println();
+    }
+    
     public void printTree()  {
         tree.print();
     }

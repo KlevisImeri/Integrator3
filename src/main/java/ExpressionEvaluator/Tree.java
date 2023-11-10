@@ -4,8 +4,6 @@ package ExpressionEvaluator;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.tree.TreeNode;
-
 public class Tree<T> {
     private List<Tree<T>> children = new ArrayList<Tree<T>>();
     private Tree<T> parent = null;
