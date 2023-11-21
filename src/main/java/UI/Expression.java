@@ -1,20 +1,23 @@
 package UI;
 
-import java.awt.Color;
 import ExpressionEvaluator.Parser;
+import java.awt.Color;
+import java.io.Serializable; 
 
-public class Function {
-    public Parser parser = new Parser();
-    public Color color = new Color(255,139,142);
+public class Expression implements Serializable {
+    private static final long serialVersionUID = 1L; 
 
-    public Function() {}
+    Parser parser = new Parser();
+    Color color = new Color(255, 139, 142);
 
-    public Function(Color color) {
+    public Expression() {}
+
+    public Expression(Color color) {
         parser = new Parser();
         this.color = color;
     }
 
-    public Function(String expression, Color color) throws Exception {
+    public Expression(String expression, Color color) throws Exception {
         this.parser = new Parser(expression);
         this.color = color;
     }

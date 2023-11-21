@@ -2,8 +2,6 @@ package ExpressionEvaluator;
 
 import java.util.Stack;
 
-import javax.activity.InvalidActivityException;
-
 public class Parser extends Lexer {
     protected Tree<Token> tree = new Tree<Token>();
     protected Stack<Token> tokensRPN = new Stack<>(); // Changed to Stack

@@ -4,12 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Set;
-import java.util.HashSet;
-
 
 public class FunctionGrapher extends JPanel {
     private static int SCALE = 100;
-    private Set<Function> functions = new HashSet<>();
+    Set<Expression> functions;
     private int divisionsSize = 5;
     private int numberOfXdivisions;
     private int numberOfYdivisions;
@@ -19,11 +17,17 @@ public class FunctionGrapher extends JPanel {
     private int lastY = 0;
     private int middleX;
     private int middleY;
+    private Color darkmodeBackgroundColor = new Color(24, 25, 26);
 
-    public FunctionGrapher() {
-        setBackground(new Color(24, 25, 26));
+    public FunctionGrapher(Set<Expression> functions) {
+        setBackground(darkmodeBackgroundColor);
+        setListeners();
+        this.functions = functions;
+    }
 
-        addMouseWheelListener(new MouseWheelListener() {
+    // Listeners of the cartesian plane
+    private void addZoomListener() {
+        this.addMouseWheelListener(new MouseWheelListener() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
                 int notches = e.getWheelRotation();
@@ -37,7 +41,9 @@ public class FunctionGrapher extends JPanel {
                 repaint();
             }
         });
+    }
 
+    private void addClickListener() {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -47,7 +53,9 @@ public class FunctionGrapher extends JPanel {
                 }
             }
         });
+    }
 
+    private void addDragListener() {
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
@@ -62,7 +70,9 @@ public class FunctionGrapher extends JPanel {
                 }
             }
         });
+    }
 
+    private void addResizeListener() {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -71,27 +81,24 @@ public class FunctionGrapher extends JPanel {
         });
     }
 
-    public void addFunction(Function function) {
-        functions.add(function);
-        repaint();
-    }
-
-    public void removeFunction(Function function) {
-        functions.remove(function);
-        repaint();
+    private void setListeners() {
+        addZoomListener();
+        addClickListener();
+        addDragListener();
+        addResizeListener();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         setMiddleX();
         setMiddleY();
-        //Should come after set middle
+        // Should come after set middle
         setNumberOfXdivisions();
         setNumberOfYdivisions();
 
         super.paintComponent(g);
         drawAxes(g);
-        for (Function function : functions) {
+        for (Expression function : functions) {
             drawFunction(g, function);
         }
     }
@@ -111,9 +118,9 @@ public class FunctionGrapher extends JPanel {
         drawAxisDivisions(g);
     }
 
-    private void drawFunction(Graphics g, Function function) {
+    private void drawFunction(Graphics g, Expression function) {
         g.setColor(function.color);
-        
+
         setMiddleX();
         setMiddleY();
 
@@ -135,69 +142,72 @@ public class FunctionGrapher extends JPanel {
                 g.drawLine(screenX1, screenY1 + 1, screenX2, screenY2 + 1);
                 g.drawLine(screenX1, screenY1 - 1, screenX2, screenY2 - 1);
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
     private void drawAxisDivisions(Graphics g) {
         g.setColor(Color.WHITE);
-    
+
         double increment = 100.0 / SCALE;
-    
+
         // X-axis positive divisions
         for (double i = 0; i < numberOfXdivisions; i += increment) {
             int x = middleX + (int) (i * SCALE);
-    
+
             g.drawLine(x, middleY - divisionsSize, x, middleY + divisionsSize);
             if (i != 0) {
                 g.drawString(String.format("%.2f", i), x - 15, middleY + 20);
             }
         }
-    
+
         // X-axis negative divisions
         for (double i = 0; i > -numberOfXdivisions; i -= increment) {
             int x = middleX + (int) (i * SCALE);
-    
+
             g.drawLine(x, middleY - divisionsSize, x, middleY + divisionsSize);
             if (i != 0) {
                 g.drawString(String.format("%.2f", i), x - 15, middleY + 20);
             }
         }
-    
+
         // Y-axis negative divisions
         for (double i = 0; i < numberOfYdivisions; i += increment) {
             int y = middleY + (int) (i * SCALE);
-    
+
             g.drawLine(middleX - divisionsSize, y, middleX + divisionsSize, y);
             if (i != 0) {
                 g.drawString(String.format("%.2f", -i), middleX - 30, y + 5);
             }
         }
-    
+
         // Y-axis positive divisions
         for (double i = 0; i > -numberOfYdivisions; i -= increment) {
             int y = middleY + (int) (i * SCALE);
-    
+
             g.drawLine(middleX - divisionsSize, y, middleX + divisionsSize, y);
             if (i != 0) {
                 g.drawString(String.format("%.2f", -i), middleX - 30, y + 5);
             }
         }
     }
-    
 
     public void setNumberOfXdivisions() {
-        int positiveSide = (getWidth()-middleX) / SCALE;
+        int positiveSide = (getWidth() - middleX) / SCALE;
         int negativeSide = middleX / SCALE;
-        this.numberOfXdivisions = Math.max(positiveSide,negativeSide) + 1;
+        this.numberOfXdivisions = Math.max(positiveSide, negativeSide) + 1;
     }
+
     public void setNumberOfYdivisions() {
-        int negativeSide = (getHeight()-middleY) / SCALE + 1;
+        int negativeSide = (getHeight() - middleY) / SCALE + 1;
         int positiveSide = middleY / SCALE;
-        this.numberOfYdivisions = Math.max(positiveSide,negativeSide) + 1;
+        this.numberOfYdivisions = Math.max(positiveSide, negativeSide) + 1;
     }
+
     public void setMiddleX() {
         this.middleX = getWidth() / 2 + offsetX;
     }
+
     public void setMiddleY() {
         this.middleY = getHeight() / 2 + offsetY;
     }

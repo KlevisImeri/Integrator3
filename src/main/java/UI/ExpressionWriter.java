@@ -1,92 +1,50 @@
 package UI;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.event.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.util.function.Consumer;
+import java.util.Set;
 
 public class ExpressionWriter extends JPanel {
-    private JTextField textField;
-    private JButton colorButton; // Change to JButton
-    private Color selectedColor;
-    private FunctionGrapher grapher;
-    Function function = new Function();
+    private FunctionTextField textField = new FunctionTextField(this::updateFunction);
+    private ColorButton colorButton = new ColorButton(this::updateFunction);
+    private RemoveButton removeButton;
+    Set<Expression> functions;
+    Expression function = new Expression();
+    private Color darkmodeBackgroundColor = new Color(15, 15, 15);
+    private Color redMistakeColor = new Color(237, 83, 83);
+    private Color greenGoodExpressionColor = new Color(157, 219, 110);
+    private LineBorder goodLineBorder = new LineBorder(greenGoodExpressionColor, 1);
+    private LineBorder badLineBorder = new LineBorder(redMistakeColor, 1);
 
-    public ExpressionWriter(FunctionGrapher grapher) {
-        setBackground(new Color(24, 25, 26));
-        setLayout(new FlowLayout());
+    public ExpressionWriter(Set<Expression> functions, Consumer<ExpressionWriter> removeExpressionWriter) {
+        this.removeButton = new RemoveButton(removeExpressionWriter, this);
+        this.functions = functions;
+        setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        setBackground(darkmodeBackgroundColor);
+        setLayout(new BorderLayout());
+        add(colorButton, BorderLayout.WEST);
+        add(textField, BorderLayout.CENTER);
+        add(removeButton, BorderLayout.EAST);
 
-        this.grapher = grapher;
-
-        textField = new JTextField(20);
-        textField.setBackground(new Color(24, 25, 26));
-        textField.setForeground(Color.WHITE);
-        Font customFont = textField.getFont().deriveFont(16f);
-        textField.setFont(customFont);
-        // Insets textFieldInsets = new Insets(5, 10, 5, 10);
-        // textField.setMargin(textFieldInsets);
-
-        colorButton = new JButton(); // Use a JButton
-        colorButton.setBorderPainted(false); // Remove border
-        colorButton.setPreferredSize(new Dimension(20, 20)); // Set preferred size
-        colorButton.setFocusPainted(false); // Remove focus border
-        colorButton.setBackground(Color.WHITE); // Set background color
-        
-        add(colorButton); 
-        add(textField);
-
-        textField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                updateFunction();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                updateFunction();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                updateFunction();
-            }
-        });
-
-        colorButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                openColorPicker();
-            }
-        });
-    }
-
-    private void openColorPicker() {
-        Color currentColor = colorButton.getBackground();
-        selectedColor = JColorChooser.showDialog(null, "Choose Color", currentColor);
-
-        if (selectedColor != null) {
-            colorButton.setBackground(selectedColor);
-            updateFunction();
-        }
     }
 
     private void updateFunction() {
         String expression = textField.getText();
         try {
             function.editFunction(expression);
-            function.setColor(selectedColor);
-            grapher.addFunction(function);
-            textField.setBorder(new LineBorder(new Color(157, 219, 110), 1));
+            function.setColor(colorButton.getSelectedColor());
+            functions.add(function);
+            textField.setBorder(goodLineBorder);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            textField.setBorder(new LineBorder(new Color(237, 83, 83), 1));
+            textField.setBorder(badLineBorder);
         }
         textField.repaint();
     }
 
     public void close() {
-        grapher.removeFunction(function);
+        functions.remove(function);
     }
 }

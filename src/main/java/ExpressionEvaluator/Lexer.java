@@ -49,6 +49,10 @@ public class Lexer {
         this.expression = expression;
     }
 
+    public String getExpression(){
+        return this.expression;
+    }
+
     public String getStr() {
         return expression;
     }

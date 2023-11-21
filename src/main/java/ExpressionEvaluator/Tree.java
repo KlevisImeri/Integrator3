@@ -1,10 +1,11 @@
 package ExpressionEvaluator;
 
+import java.io.Serializable;
 //https://stackoverflow.com/questions/19330731/tree-implementation-in-java-root-parents-and-children
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tree<T> {
+public class Tree<T> implements Serializable {
     private List<Tree<T>> children = new ArrayList<Tree<T>>();
     private Tree<T> parent = null;
     private T data = null;
