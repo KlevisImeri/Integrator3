@@ -3,11 +3,14 @@ package UI;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Set;
+import data.Expression;
+import data.Controller;
 
 public class FunctionGrapher extends JPanel {
-    private static int SCALE = 100;
-    Set<Expression> functions;
+    private Controller controller;
+    private static Color darkmodeBackgroundColor = new Color(24, 25, 26);
+
+    private int SCALE = 100;
     private int divisionsSize = 5;
     private int numberOfXdivisions;
     private int numberOfYdivisions;
@@ -17,12 +20,11 @@ public class FunctionGrapher extends JPanel {
     private int lastY = 0;
     private int middleX;
     private int middleY;
-    private Color darkmodeBackgroundColor = new Color(24, 25, 26);
 
-    public FunctionGrapher(Set<Expression> functions) {
+    public FunctionGrapher(Controller controller) {
         setBackground(darkmodeBackgroundColor);
         setListeners();
-        this.functions = functions;
+        this.controller = controller;
     }
 
     // Listeners of the cartesian plane
@@ -98,9 +100,11 @@ public class FunctionGrapher extends JPanel {
 
         super.paintComponent(g);
         drawAxes(g);
-        for (Expression function : functions) {
+
+        for (Expression function : controller.getFunctions()) {
             drawFunction(g, function);
         }
+
     }
 
     private void drawAxes(Graphics g) {
@@ -119,7 +123,7 @@ public class FunctionGrapher extends JPanel {
     }
 
     private void drawFunction(Graphics g, Expression function) {
-        g.setColor(function.color);
+        g.setColor(controller.getFunctionColor(function));
 
         setMiddleX();
         setMiddleY();
@@ -130,8 +134,8 @@ public class FunctionGrapher extends JPanel {
             for (int i = 0; i < getWidth(); i++) {
                 double x1 = (i - middleX) * pixelsPerUnit;
                 double x2 = (i + 1 - middleX) * pixelsPerUnit;
-                double y1 = function.parser.eval(x1);
-                double y2 = function.parser.eval(x2);
+                double y1 = controller.evaluateFuntion(function, x1);
+                double y2 = controller.evaluateFuntion(function, x2);
 
                 int screenX1 = i;
                 int screenY1 = middleY - (int) (y1 * SCALE);

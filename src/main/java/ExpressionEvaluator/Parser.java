@@ -1,4 +1,4 @@
-package ExpressionEvaluator;
+package expressionEvaluator;
 
 import java.util.Stack;
 

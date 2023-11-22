@@ -12,7 +12,7 @@ public class ColorButton extends JButton {
         setBorderPainted(false); 
         setFocusPainted(false); 
         addColorPickerOpenClickListener();
-         setBackground(selectedColor);
+        setBackground(selectedColor);
     }
 
     private void openColorPicker() {
@@ -30,6 +30,10 @@ public class ColorButton extends JButton {
 
     public Color getSelectedColor() {
         return selectedColor;
+    }
+    public void setSelectedColor(Color selectedColor) {
+        this.selectedColor = selectedColor;
+        setBackground(selectedColor);
     }
 
 }

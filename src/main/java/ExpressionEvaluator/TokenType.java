@@ -1,4 +1,4 @@
-package ExpressionEvaluator;
+package expressionEvaluator;
 
 public enum TokenType {
     NONE,

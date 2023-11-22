@@ -1,4 +1,4 @@
-package ExpressionEvaluator;
+package expressionEvaluator;
 
 import java.io.Serializable;
 //https://stackoverflow.com/questions/19330731/tree-implementation-in-java-root-parents-and-children

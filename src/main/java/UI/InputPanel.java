@@ -1,16 +1,18 @@
 package UI;
 
 import javax.swing.*;
+
+import data.Controller;
+import data.Expression;
 import java.awt.*;
-import java.util.Set;
 
 public class InputPanel extends JPanel {
+    Controller controller;
     private AddButton addButton = new AddButton(this::addExpressionWriter);
     FunctionGrapher grapher;
-    Set<Expression> functions;
 
-    public InputPanel(Set<Expression> functions) {
-        this.functions = functions;
+    public InputPanel(Controller controller) {
+        this.controller = controller;
 
         setBackground(new Color(24, 25, 26));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -19,8 +21,19 @@ public class InputPanel extends JPanel {
         add(new ButtonPanel(addButton));
     }
 
-    public void addExpressionWriter() {
-        add(new ExpressionWriter(functions, this::removeExpressionWriter));
+        
+    public void update() {
+        removeAll();
+        add(new ButtonPanel(addButton));
+
+        for (Expression function : controller.getFunctions()) {            
+            addExpressionWriter(function);
+        }
+    }
+    
+    
+    public void addExpressionWriter(Expression function) {
+        add(new ExpressionWriter(controller, this::removeExpressionWriter, function));
         revalidate();
         repaint();
     }

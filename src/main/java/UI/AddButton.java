@@ -1,12 +1,15 @@
 package UI;
 
 import javax.swing.*;
+
+import data.Expression;
+
 import java.awt.*;
-import java.lang.Runnable;
+import java.util.function.Consumer;
 
 public class AddButton extends JButton{
     
-    AddButton(Runnable addExpressionWriter) {
+    AddButton(Consumer<Expression> addExpressionWriter) {
         super("+");
 
         setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
@@ -18,7 +21,7 @@ public class AddButton extends JButton{
         setSizeFont(20);
         setContentAreaFilled(false);
         
-        addActionListener((e) -> addExpressionWriter.run());
+        addActionListener((e) -> addExpressionWriter.accept(null));
     }
 
     public void setSizeFont(int size) {

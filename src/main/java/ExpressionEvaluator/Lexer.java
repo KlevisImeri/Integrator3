@@ -1,4 +1,4 @@
-package ExpressionEvaluator;
+package expressionEvaluator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
