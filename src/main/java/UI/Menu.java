@@ -3,9 +3,6 @@ package UI;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-import org.omg.CORBA.CODESET_INCOMPATIBLE;
-
 import java.awt.Color;
 import java.io.*;
 import data.Controller;

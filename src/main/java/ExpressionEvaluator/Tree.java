@@ -75,5 +75,26 @@ public class Tree<T> implements Serializable {
             children.get(children.size() - 1).print(prefix + (isTail ? "    " : "│   "), true);
         }
     }
+
+    private StringBuilder treeToString(StringBuilder prefix, boolean isTail) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(prefix).append(isTail ? "└── " : "├── ").append(data).append("\n");
+    
+        List<Tree<T>> children = this.getChildren();
+        for (int i = 0; i < children.size() - 1; i++) {
+            sb.append(children.get(i).treeToString(new StringBuilder().append(prefix).append(isTail ? "    " : "│   "), false));
+        }
+    
+        if (!children.isEmpty()) {
+            sb.append(children.get(children.size() - 1).treeToString(new StringBuilder().append(prefix).append(isTail ? "    " : "│   "), true));
+        }
+    
+        return sb;
+    }
+    
+    public String toString() {
+        return treeToString(new StringBuilder(), true).toString();
+    }
+    
 }
 

@@ -24,6 +24,8 @@ public class Parser extends Lexer {
         tokenize();
         shuntingYard();
         parseTokens(tree);
+        printTokensRPN();
+        printTree();
     }
 
     private boolean tokenHasLowerOrEqualPrecedenceThanTheTopOperatorInStack(Token token) {
@@ -92,12 +94,15 @@ public class Parser extends Lexer {
                             tokensRPN.push(opStack.pop()); // Push to Stack
                         }
                     }
+                    // System.out.println(token.toString());
+                    // System.out.println(opStack.toString());
 
                     if (isNextToRightParenAFunction(token)) {
                         tokensRPN.push(opStack.pop()); // Pop the function from the stack and enqueue it
-                    } else if (isNextToRightParenEmtyOrLeftParen(token)) {
-                        throw new IllegalArgumentException("Mismatched parentheses");
-                    }
+                    } 
+                    // else if (isNextToRightParenEmtyOrLeftParen(token)) {
+                    //     throw new IllegalArgumentException("Mismatched parentheses");
+                    // }
 
                     break;
                 default:
@@ -221,6 +226,18 @@ public class Parser extends Lexer {
     
     public void printTree()  {
         tree.print();
+    }
+
+    public String stringTokensRPN() {
+        return tokensRPN.toString();
+    }
+
+    public void printTokensRPN() {
+        System.out.println(tokensRPN.toString());
+    }
+
+    public String treeToString() {
+        return tree.toString();
     }
 }
 

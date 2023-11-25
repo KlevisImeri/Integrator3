@@ -61,10 +61,47 @@ public class Lexer {
         return tokenList;
     }
 
+
+    //helper fucntions
     private TokenType getTokenTypeOfLastElement() {
         return  tokenList.size() > 0 ? tokenList.get(tokenList.size() - 1).getType() : TokenType.NONE;
     }
+    private boolean isDigit(int i) {
+        return Character.isDigit(expression.charAt(i)) || expression.charAt(i) == '.';
+    }
+    private void addMultiplicationSign() {
+        /*  numbers,parenthses and variables can be multiplied with 
+            each other without the need of multiplicatoin sign      */
+        TokenType lastElement = getTokenTypeOfLastElement();
+        switch (lastElement) {
+            case PAREN_RIGHT: // ) * [<num>, ( , x, const]
+            case VARIABLE: // x * [<num>, ( , x, const]
+            case NUMBER: // <num> * [<num>, ( , x, const]
+                tokenList.add(new Token(TokenType.OPERATOR, "*"));
+                break;
+            default:
+                break;
+        }
+    }
+    //is 
+    private boolean isLastTokenNumber(int i) {
+        return !tokenList.isEmpty() && tokenList.get(tokenList.size() - 1).getType() == TokenType.NUMBER;
+    }
+    private boolean isLastTokenDivisonOperator(int i) {
+        return !tokenList.isEmpty() && tokenList.get(tokenList.size() - 1).getValue().equals("/");
+    }
+    private boolean isValidCharForNaming(int i) {
+        return Character.isLetter(expression.charAt(i)) || expression.charAt(i) == '_';
+    }
+    private boolean isCurrentTokenRightParen(int i) {
+        return !tokenList.isEmpty() && tokenList.get(tokenList.size() - 1).getValue().equals(")");
+    }
+    private boolean isLastTokenVariable(int i) {
+        return !tokenList.isEmpty() && tokenList.get(tokenList.size() - 1).getType() == TokenType.VARIABLE;
+    }
 
+
+    //tokenize functions
     private int tokenizeAdditonOrSubtraction(int i) throws IllegalArgumentException {
         int size = expression.length();
         TokenType lastElement = getTokenTypeOfLastElement();
@@ -110,15 +147,9 @@ public class Lexer {
         return ++i;
     }
 
-    private boolean isDigit(int i) {
-        return Character.isDigit(expression.charAt(i)) || expression.charAt(i) == '.';
-    }
-    private boolean isLastTokenDivisonOperator(int i) {
-        return !tokenList.isEmpty() && tokenList.get(tokenList.size() - 1).getValue().equals("/");
-    }
     private int tokenizeNumber(int i) throws IllegalArgumentException {
         int size = expression.length();
-        
+
         StringBuilder numberString = new StringBuilder();
         while (i < size && isDigit(i)) {
             numberString.append(expression.charAt(i));
@@ -130,31 +161,22 @@ public class Lexer {
             throw new ArithmeticException("Divison by zero is prohibited!");
         }
 
+        addMultiplicationSign();
+
         tokenList.add(new Token(TokenType.NUMBER, numberString.toString()));
         return i;
     }
 
-    private boolean isValidCharForNaming(int i) {
-        return Character.isLetterOrDigit(expression.charAt(i)) || expression.charAt(i) == '_';
-    }
-    private int tokenizeFucntionOrConstant(int i) throws IllegalArgumentException {
+    private int tokenizeFucntionOrConstantOrVariable(int i) throws IllegalArgumentException {
         int size = expression.length();
-        TokenType lastElement = getTokenTypeOfLastElement();
-
-        switch (lastElement) {
-            case NUMBER: //<num>x -> <num>*x
-            case PAREN_RIGHT: // 2. )x -> )*x
-                tokenList.add(new Token(TokenType.OPERATOR, "*"));
-                break;
-            default:
-                break;
-        }
-
+    
         StringBuilder name = new StringBuilder();
         while (i < size && isValidCharForNaming(i)) {
             name.append(expression.charAt(i));
             i++;
         }
+
+        addMultiplicationSign();
 
         switch (name.toString()) {
             case "x":
@@ -177,14 +199,9 @@ public class Lexer {
         return i;
     }
 
-    private boolean isLastTokenNumber(int i) {
-        return !tokenList.isEmpty() && tokenList.get(tokenList.size() - 1).getType() == TokenType.NUMBER;
-    }
     private int tokenizeParenLeft(int i) throws IllegalArgumentException {
         
-        if (isLastTokenNumber(i)) {// <num>() => <num>*()
-            tokenList.add(new Token(TokenType.OPERATOR, "*"));
-        }
+        addMultiplicationSign();
 
         tokenList.add(new Token(TokenType.PAREN_LEFT, String.valueOf(expression.charAt(i))));
         Paren_left++;
@@ -202,7 +219,7 @@ public class Lexer {
         return ++i;
     }
 
-    protected void tokenize() throws Exception {
+    public void tokenize() throws Exception {
         // Preparation
         tokenList.clear();
         Paren_left = 0;
@@ -242,15 +259,15 @@ public class Lexer {
                     if (Character.isDigit(currentChar)) {
                         i = tokenizeNumber(i);
                     } else if (Character.isLetter(currentChar)) {
-                        i = tokenizeFucntionOrConstant(i);
+                        i = tokenizeFucntionOrConstantOrVariable(i);
                     } else {
                         throw new IllegalArgumentException(String.valueOf(currentChar));
                     }
                     break;
             }
         }
-
-
+        
+        
         // EXCEPTION HANDLING
         // parentheses
         if (Paren_right != Paren_left) {
@@ -262,12 +279,14 @@ public class Lexer {
                 validateArityOfFunction(j);
             }
         }
-    }    
 
+        listTokens();
+    }    
+    
     private void validateArityOfFunction(int i) throws IllegalArgumentException {
         int numberOfCommas = 0;
         boolean functionHasParameters = false;
-    
+        
         if (tokenList.get(i + 1).getType() != TokenType.PAREN_LEFT) {
             throw new IllegalArgumentException("Functions should have '()' at the end!");
         }
@@ -296,7 +315,16 @@ public class Lexer {
             throw new IllegalArgumentException("The arity of the function is not correct!");
         }
     }
-    
+
+    //print functoins
+    public String stringTokens() {
+        return tokenList.toString();
+    }
+
+    public void listTokens() {
+        System.out.println(stringTokens());
+    }
+
     public void printTokens() {
         System.out.println("Lexer{");
         System.out.println(" Function: " + expression);
