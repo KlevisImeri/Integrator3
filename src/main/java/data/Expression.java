@@ -4,10 +4,11 @@ import java.awt.Color;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import expressionEvaluator.Parser;
+import expressionEvaluator.ExpressionEvaluator;
+import expressionEvaluator.ExpressionParser;
 
 public class Expression implements JsonConvertible {
-    Parser parser = new Parser();
+    ExpressionEvaluator evaluator = new ExpressionEvaluator();
     Color color = new Color(255, 139, 142);
 
     Expression() {
@@ -23,7 +24,7 @@ public class Expression implements JsonConvertible {
     }
 
     void update(String expression) throws Exception {
-        parser.parse(expression);
+        evaluator.parse(expression);
     }
 
     void setColor(Color color) {
@@ -33,7 +34,7 @@ public class Expression implements JsonConvertible {
     @Override
     public JSONObject getJSONObject() {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("expression", parser.getExpression());
+        jsonObject.put("expression", evaluator.getExpression());
         jsonObject.put("color", colorToJSONArray(color));
         return jsonObject;
     }
@@ -41,7 +42,7 @@ public class Expression implements JsonConvertible {
     @Override
     public void setJSONObject(JSONObject jsonObject) {
         String expression = (String) jsonObject.get("expression");
-        parser.setExpression(expression);
+        evaluator.setExpression(expression);
         try {
             update(expression);
         } catch (Exception e) {
@@ -70,6 +71,6 @@ public class Expression implements JsonConvertible {
 
     @Override
     public String toString() {
-        return parser.getExpression()+color.toString();
+        return evaluator.getExpression()+color.toString();
     }
 }

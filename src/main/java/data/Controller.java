@@ -71,7 +71,7 @@ public class Controller {
     }
     
     public void setExpression(Expression function, String newExpression) {
-        function.parser.setExpression(newExpression);
+        function.evaluator.setExpression(newExpression);
     }
 
     public void updateFuntion(Expression function,  String newExpression) throws Exception {
@@ -80,7 +80,7 @@ public class Controller {
     }
 
     public double evaluateFuntion(Expression function, double value) throws Exception {
-        return function.parser.eval(value);
+        return function.evaluator.eval(value);
     }
 
     public void colorFunction(Expression function, Color color) {
@@ -97,7 +97,7 @@ public class Controller {
     }
 
     public String getFunctionString(Expression function) {
-        return function.parser.getExpression();
+        return function.evaluator.getExpression();
     }
 
 

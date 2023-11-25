@@ -1,4 +1,5 @@
 {
-    "java.configuration.updateBuildConfiguration": "disabled",
-    "java.debug.settings.onBuildFailureProceed": true
+    "maven.view": "flat",
+    "editor.autoClosingQuotes": "never",
+    "java.configuration.updateBuildConfiguration": "automatic",
 }

@@ -1,0 +1,28 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Klevis Report,default,Main,21,0,0,0,5,0,2,0,2,0
+Klevis Report,expressionEvaluator,Lexer,214,662,35,64,38,129,35,47,8,19
+Klevis Report,expressionEvaluator,Parser,276,297,33,47,63,59,34,33,9,10
+Klevis Report,expressionEvaluator,Token,56,54,12,8,10,11,14,12,8,8
+Klevis Report,expressionEvaluator,TokenType,0,104,0,0,0,11,0,1,0,1
+Klevis Report,expressionEvaluator,Tree,133,125,14,10,24,22,15,13,8,8
+Klevis Report,UI,ColorButton,62,0,2,0,19,0,7,0,6,0
+Klevis Report,UI,FunctionGrapher.new ComponentAdapter() {...},10,0,0,0,3,0,2,0,2,0
+Klevis Report,UI,FunctionGrapher.new MouseWheelListener() {...},33,0,2,0,8,0,3,0,2,0
+Klevis Report,UI,FunctionGrapher,577,0,20,0,94,0,25,0,15,0
+Klevis Report,UI,FunctionGrapher.new MouseMotionAdapter() {...},51,0,2,0,10,0,3,0,2,0
+Klevis Report,UI,FunctionGrapher.new MouseAdapter() {...},20,0,2,0,5,0,3,0,2,0
+Klevis Report,UI,MainFrame,101,0,0,0,21,0,2,0,2,0
+Klevis Report,UI,FunctionTextField,65,0,0,0,14,0,3,0,3,0
+Klevis Report,UI,InputPanel,92,0,2,0,22,0,5,0,4,0
+Klevis Report,UI,MainFrame.1.new BasicSplitPaneDivider() {...},8,0,0,0,2,0,2,0,2,0
+Klevis Report,UI,ButtonPanel,27,0,0,0,6,0,1,0,1,0
+Klevis Report,UI,ExpressionWriter,148,0,2,0,35,0,6,0,5,0
+Klevis Report,UI,AddButton,69,0,0,0,15,0,3,0,3,0
+Klevis Report,UI,RoundedBorder,41,0,0,0,7,0,4,0,4,0
+Klevis Report,UI,Menu,189,0,14,0,47,0,16,0,9,0
+Klevis Report,UI,RemoveButton,63,0,0,0,15,0,3,0,3,0
+Klevis Report,UI,MainFrame.new BasicSplitPaneUI() {...},9,0,0,0,2,0,2,0,2,0
+Klevis Report,UI,FunctionTextField.new DocumentListener() {...},21,0,0,0,7,0,4,0,4,0
+Klevis Report,data,Expression,171,0,0,0,37,0,10,0,10,0
+Klevis Report,data,JSONHashSet,72,0,4,0,18,0,5,0,3,0
+Klevis Report,data,Controller,178,0,0,0,58,0,20,0,20,0

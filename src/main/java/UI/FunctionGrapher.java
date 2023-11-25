@@ -136,6 +136,9 @@ public class FunctionGrapher extends JPanel {
                 double x2 = (i + 1 - middleX) * pixelsPerUnit;
                 double y1 = controller.evaluateFuntion(function, x1);
                 double y2 = controller.evaluateFuntion(function, x2);
+                
+                if(Double.isNaN(y1) || y1==Double.NEGATIVE_INFINITY || y1==Double.POSITIVE_INFINITY ) continue;
+                if(Double.isNaN(y2) || y2==Double.NEGATIVE_INFINITY || y2==Double.POSITIVE_INFINITY ) continue;
 
                 int screenX1 = i;
                 int screenY1 = middleY - (int) (y1 * SCALE);

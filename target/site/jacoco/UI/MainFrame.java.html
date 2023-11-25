@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MainFrame.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Klevis Report</a> &gt; <a href="index.source.html" class="el_package">UI</a> &gt; <span class="el_source">MainFrame.java</span></div><h1>MainFrame.java</h1><pre class="source lang-java linenums">package UI;
+
+import javax.swing.*;
+import java.awt.*;
+import javax.swing.border.Border;
+import javax.swing.plaf.basic.BasicSplitPaneDivider;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
+import data.Controller;
+
+public class MainFrame extends JFrame {
+    Controller controller;
+    FunctionGrapher fGrapher;
+    InputPanel inputPanel;
+<span class="nc" id="L14">    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, inputPanel, fGrapher);</span>
+
+    public MainFrame(Controller controller, int WIDTH, int HEIGHT) {
+<span class="nc" id="L17">        super(&quot;Function Grapher&quot;);</span>
+
+<span class="nc" id="L19">        this.controller = controller;</span>
+<span class="nc" id="L20">        this.fGrapher = new FunctionGrapher(controller);</span>
+<span class="nc" id="L21">        this.inputPanel = new InputPanel(controller);</span>
+<span class="nc" id="L22">        this.splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, inputPanel, fGrapher);</span>
+        
+<span class="nc" id="L24">        controller.addCallbackRun(this.fGrapher::repaint);</span>
+<span class="nc" id="L25">        controller.addCallbackReload(this.inputPanel::update);</span>
+        
+<span class="nc" id="L27">        setCleanSplitUI(splitPane);</span>
+<span class="nc" id="L28">        add(splitPane, BorderLayout.CENTER);</span>
+<span class="nc" id="L29">        setJMenuBar(new Menu(controller));</span>
+
+<span class="nc" id="L31">        setSize(WIDTH, HEIGHT);</span>
+<span class="nc" id="L32">        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span>
+<span class="nc" id="L33">        setLocationRelativeTo(null);</span>
+<span class="nc" id="L34">        setVisible(true);</span>
+<span class="nc" id="L35">    }</span>
+
+    static void setCleanSplitUI(JSplitPane splitPane) {
+        // Create a custom UI for the slider
+<span class="nc" id="L39">        BasicSplitPaneUI splitPaneUI = new BasicSplitPaneUI() {</span>
+            @Override
+            public BasicSplitPaneDivider createDefaultDivider() {
+<span class="nc" id="L42">                return new BasicSplitPaneDivider(this) {</span>
+                    @Override
+                    public void setBorder(Border b) {
+                        // Remove the border to make it look cleaner
+<span class="nc" id="L46">                    }</span>
+                };
+            }
+        };
+
+        // Set the custom UI to the splitPane
+<span class="nc" id="L52">        splitPane.setResizeWeight(0.23);</span>
+<span class="nc" id="L53">        splitPane.setBackground(new Color(15, 15, 15));</span>
+<span class="nc" id="L54">        splitPane.setUI(splitPaneUI);</span>
+<span class="nc" id="L55">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

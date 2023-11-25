@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Parser.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Klevis Report</a> &gt; <a href="index.source.html" class="el_package">expressionEvaluator</a> &gt; <span class="el_source">Parser.java</span></div><h1>Parser.java</h1><pre class="source lang-java linenums">package expressionEvaluator;
+
+import java.util.Stack;
+
+public class Parser extends Lexer {
+<span class="pc" id="L6">    protected Tree&lt;Token&gt; tree = new Tree&lt;Token&gt;();</span>
+<span class="pc" id="L7">    protected Stack&lt;Token&gt; tokensRPN = new Stack&lt;&gt;(); // Changed to Stack</span>
+<span class="pc" id="L8">    protected Stack&lt;Token&gt; opStack = new Stack&lt;&gt;();</span>
+
+<span class="fc" id="L10">    public Parser() {}</span>
+
+    public Parser(String expression) throws Exception {
+<span class="nc" id="L13">        super(expression);</span>
+<span class="nc" id="L14">        tokenize();</span>
+<span class="nc" id="L15">        shuntingYard();</span>
+<span class="nc" id="L16">        parseTokens(tree);</span>
+<span class="nc" id="L17">    }</span>
+
+    public void parse() throws Exception {
+<span class="nc" id="L20">        tree = new Tree&lt;Token&gt;();</span>
+<span class="nc" id="L21">        tokensRPN = new Stack&lt;&gt;(); </span>
+<span class="nc" id="L22">        opStack = new Stack&lt;&gt;();</span>
+<span class="nc" id="L23">        tokenize();</span>
+<span class="nc" id="L24">        shuntingYard();</span>
+<span class="nc" id="L25">        printTokensRPN();</span>
+<span class="nc" id="L26">        parseTokens(tree);</span>
+<span class="nc" id="L27">        printTree();</span>
+<span class="nc" id="L28">    }</span>
+
+    public void parse(String expression) throws Exception {
+<span class="nc" id="L31">        tree = new Tree&lt;Token&gt;();</span>
+<span class="nc" id="L32">        tokensRPN = new Stack&lt;&gt;(); </span>
+<span class="nc" id="L33">        opStack = new Stack&lt;&gt;();</span>
+<span class="nc" id="L34">        setExpression(expression);</span>
+<span class="nc" id="L35">        tokenize();</span>
+<span class="nc" id="L36">        shuntingYard();</span>
+<span class="nc" id="L37">        printTokensRPN();</span>
+<span class="nc" id="L38">        parseTokens(tree);</span>
+<span class="nc" id="L39">        printTree();</span>
+<span class="nc" id="L40">    }</span>
+
+    public Tree&lt;Token&gt; getTree() {
+<span class="fc" id="L43">        return tree;</span>
+    }
+
+    private boolean tokenHasLowerOrEqualPrecedenceThanTheTopOperatorInStack(Token token) {
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        return operatorPrecedence.get(token.getValue().charAt(0)) &lt;= operatorPrecedence.get(opStack.peek().getValue().charAt(0));</span>
+    }
+
+    private boolean isNextOperatorPopable(Token token) {
+<span class="fc bfc" id="L51" title="All 4 branches covered.">        return opStack.peek().isOperator() &amp;&amp; tokenHasLowerOrEqualPrecedenceThanTheTopOperatorInStack(token);</span>
+    }
+
+    private boolean isNextPopable(Token token) {
+<span class="pc bpc" id="L55" title="1 of 4 branches missed.">        return isNextOperatorPopable(token) || opStack.peek().isFunction();</span>
+    }
+
+    private boolean isNextToRightParenAFunction(Token token) {
+<span class="fc bfc" id="L59" title="All 6 branches covered.">        return token.isParenRight() &amp;&amp; !opStack.isEmpty() &amp;&amp; opStack.peek().isFunction();</span>
+    }
+
+    private boolean isNextToRightParenEmtyOrLeftParen(Token token) {
+<span class="nc bnc" id="L63" title="All 6 branches missed.">        return token.isParenRight() &amp;&amp; (opStack.isEmpty() || opStack.peek().isParenLeft());</span>
+    }
+
+    public void shuntingYard() throws Exception {
+<span class="fc" id="L67">        int numberFunctions = 0;</span>
+
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        for (Token token : tokenList) {</span>
+<span class="pc bpc" id="L70" title="1 of 6 branches missed.">            switch (token.getType()) {</span>
+                case NUMBER:
+                case VARIABLE:
+                case EULER:
+                case PI:
+<span class="fc" id="L75">                    tokensRPN.push(token); // Push to Stack</span>
+<span class="fc" id="L76">                    break;</span>
+                case OPERATOR:
+                    // If the token is an operator, pop operators from the stack to the output queue
+                    // until the stack is empty or the top operator has lower precedence than the token
+                    // -&gt; isNextOperatorPopable(); It can also be a function -&gt; isNextPopable();
+<span class="fc bfc" id="L81" title="All 2 branches covered.">                    while (!opStack.isEmpty()) {</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">                        if (isNextPopable(token)) {</span>
+<span class="fc" id="L83">                            tokensRPN.push(opStack.pop()); // Push to Stack</span>
+                        } else {
+                            break;
+                        }
+                    }
+<span class="fc" id="L88">                    opStack.push(token);</span>
+<span class="fc" id="L89">                    break;</span>
+                case FUNCTION:
+<span class="fc" id="L91">                    opStack.push(token);</span>
+<span class="fc" id="L92">                    numberFunctions++;</span>
+<span class="fc" id="L93">                    break;</span>
+                case PAREN_LEFT:
+<span class="fc" id="L95">                    opStack.push(token);</span>
+<span class="fc" id="L96">                    break;</span>
+                case PAREN_RIGHT:
+                case COMMA:
+                    // If the token is a right parenthesis, pop operators from the stack to the output queue
+                    // until a left parenthesis or a function is found, which is then discarded
+<span class="fc bfc" id="L101" title="All 2 branches covered.">                    while (!opStack.isEmpty()) {</span>
+<span class="fc" id="L102">                        Token topOperator = opStack.peek();</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">                        if (topOperator.isParenLeft()) {</span>
+<span class="fc" id="L104">                            opStack.pop(); // Discard the left parenthesis</span>
+<span class="fc" id="L105">                            break;</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">                        } else if (topOperator.isFunction()) {</span>
+<span class="fc" id="L107">                            tokensRPN.push(opStack.pop()); // Pop the function from the stack and enqueue it</span>
+<span class="fc" id="L108">                        } else {</span>
+<span class="fc" id="L109">                            tokensRPN.push(opStack.pop()); // Push to Stack</span>
+                        }
+                    }
+                    // System.out.println(token.toString());
+                    // System.out.println(opStack.toString());
+
+<span class="fc bfc" id="L115" title="All 2 branches covered.">                    if (isNextToRightParenAFunction(token)) {</span>
+<span class="fc" id="L116">                        tokensRPN.push(opStack.pop()); // Pop the function from the stack and enqueue it</span>
+                    } 
+                    // else if (isNextToRightParenEmtyOrLeftParen(token)) {
+                    //     throw new IllegalArgumentException(&quot;Mismatched parentheses&quot;);
+                    // }
+
+<span class="fc" id="L122">                    break;</span>
+                default:
+<span class="nc" id="L124">                    throw new IllegalArgumentException(&quot;Invalid token type&quot;);</span>
+            }
+        }
+
+        // Pop any remaining operators or functions from the stack to the output queue
+<span class="fc bfc" id="L129" title="All 2 branches covered.">        while (!opStack.isEmpty()) {</span>
+<span class="fc" id="L130">            Token topOperator = opStack.pop();</span>
+<span class="pc bpc" id="L131" title="2 of 4 branches missed.">            if (topOperator.isParenLeft() || topOperator.isParenRight()) {</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">                if (numberFunctions == 0) {</span>
+<span class="nc" id="L133">                    throw new IllegalArgumentException(&quot;Mismatched parentheses&quot;);</span>
+                } else {
+<span class="nc" id="L135">                    numberFunctions--;</span>
+                }
+            }
+<span class="fc" id="L138">            tokensRPN.push(topOperator); // Push to Stack</span>
+        }
+<span class="fc" id="L140">    }</span>
+
+    public void parseTokens(Tree&lt;Token&gt; node) throws IllegalArgumentException {
+        // Nothing left
+<span class="fc bfc" id="L144" title="All 2 branches covered.">        if (tokensRPN.isEmpty()) {</span>
+<span class="fc" id="L145">            return;</span>
+        }
+        
+<span class="fc" id="L148">        node.setData(tokensRPN.pop());</span>
+        
+        // Creating the tree
+<span class="fc" id="L151">        int numChildren = 0;</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">        if (node.getData().isFunction()) {</span>
+<span class="fc" id="L153">            numChildren = functionArity.get(node.getData().getValue());</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">        } else if (node.getData().isOperator()) {</span>
+<span class="fc" id="L155">            numChildren = 2;</span>
+<span class="fc" id="L156">        } else {</span>
+<span class="fc" id="L157">            return;</span>
+        }
+        
+<span class="fc bfc" id="L160" title="All 2 branches covered.">        for (int i = 0; i &lt; numChildren; i++) {</span>
+<span class="pc bpc" id="L161" title="1 of 2 branches missed.">            if (tokensRPN.isEmpty()) {</span>
+<span class="nc" id="L162">                throw new IllegalArgumentException(&quot;Not enough tokens for expression!&quot;);</span>
+            }
+            
+            // add to the node.
+<span class="fc" id="L166">            Tree&lt;Token&gt; child = new Tree&lt;&gt;(); </span>
+<span class="fc" id="L167">            node.addChild(child);</span>
+            
+<span class="fc" id="L169">            parseTokens(child);</span>
+        }
+<span class="fc" id="L171">    }</span>
+
+    public double eval(double x) throws Exception {
+<span class="nc" id="L174">        return evaluate(x, tree);</span>
+    }
+
+    private double evaluate(double x, Tree&lt;Token&gt; node) throws NullPointerException, IllegalArgumentException {
+<span class="nc" id="L178">        String value = node.getData().getValue();</span>
+        double left, right;
+
+<span class="nc bnc" id="L181" title="All 7 branches missed.">        switch (node.getData().getType()) {</span>
+            case NUMBER:
+<span class="nc" id="L183">                return Double.parseDouble(value);</span>
+
+            case OPERATOR:
+<span class="nc" id="L186">                right = evaluate(x, node.getChildren().get(0));</span>
+<span class="nc" id="L187">                left = evaluate(x, node.getChildren().get(1));</span>
+
+<span class="nc bnc" id="L189" title="All 6 branches missed.">                switch (value.charAt(0)) {</span>
+                    case '+':
+<span class="nc" id="L191">                        return left + right;</span>
+                    case '-':
+<span class="nc" id="L193">                        return left - right;</span>
+                    case '*':
+<span class="nc" id="L195">                        return left * right;</span>
+                    case '/':
+<span class="nc" id="L197">                        return left / right;</span>
+                    case '^':
+<span class="nc" id="L199">                        return Math.pow(left, right);</span>
+                    default:
+<span class="nc" id="L201">                        throw new IllegalArgumentException(&quot;Operator '&quot; + value + &quot;' is not defined!&quot;);</span>
+                }
+
+            case FUNCTION:
+<span class="nc" id="L205">                right = evaluate(x, node.getChildren().get(0));</span>
+
+<span class="nc bnc" id="L207" title="All 5 branches missed.">                switch (value) {</span>
+                    case &quot;sin&quot;:
+<span class="nc" id="L209">                        return Math.sin(right);</span>
+                    case &quot;cos&quot;:
+<span class="nc" id="L211">                        return Math.cos(right);</span>
+                    case &quot;tan&quot;:
+<span class="nc" id="L213">                        return Math.tan(right);</span>
+                    case &quot;log&quot;:
+<span class="nc" id="L215">                        left = evaluate(x, node.getChildren().get(1));</span>
+<span class="nc" id="L216">                        return Math.log(left) / Math.log(right);</span>
+                    default:
+<span class="nc" id="L218">                        throw new IllegalArgumentException(&quot;Function '&quot; + value + &quot;' is not defined!&quot;);</span>
+                }
+
+            case VARIABLE:
+<span class="nc" id="L222">                return x;</span>
+
+            case EULER:
+<span class="nc" id="L225">                return Math.E;</span>
+
+            case PI:
+<span class="nc" id="L228">                return Math.PI;</span>
+
+            default:
+<span class="nc" id="L231">                throw new IllegalArgumentException(&quot;Unknown token type!&quot;);</span>
+        }
+    }
+
+    public void printTokensInRPN() {
+<span class="nc bnc" id="L236" title="All 2 branches missed.">        for (Token token : tokensRPN) {</span>
+<span class="nc" id="L237">            System.out.print(token + &quot; &quot;);</span>
+        }
+<span class="nc" id="L239">        System.out.println();</span>
+<span class="nc" id="L240">    }</span>
+    
+    public void printTree()  {
+<span class="nc" id="L243">        tree.print();</span>
+<span class="nc" id="L244">    }</span>
+
+    public String stringTokensRPN() {
+<span class="fc" id="L247">        return tokensRPN.toString();</span>
+    }
+
+    public void printTokensRPN() {
+<span class="nc" id="L251">        System.out.println(tokensRPN.toString());</span>
+<span class="nc" id="L252">    }</span>
+
+    public String treeToString() {
+<span class="fc" id="L255">        return tree.toString();</span>
+    }
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
