@@ -136,84 +136,87 @@ public class FunctionGrapher extends JPanel {
 <span class="nc" id="L136">                double x2 = (i + 1 - middleX) * pixelsPerUnit;</span>
 <span class="nc" id="L137">                double y1 = controller.evaluateFuntion(function, x1);</span>
 <span class="nc" id="L138">                double y2 = controller.evaluateFuntion(function, x2);</span>
+                
+<span class="nc bnc" id="L140" title="All 6 branches missed.">                if(Double.isNaN(y1) || y1==Double.NEGATIVE_INFINITY || y1==Double.POSITIVE_INFINITY ) continue;</span>
+<span class="nc bnc" id="L141" title="All 6 branches missed.">                if(Double.isNaN(y2) || y2==Double.NEGATIVE_INFINITY || y2==Double.POSITIVE_INFINITY ) continue;</span>
 
-<span class="nc" id="L140">                int screenX1 = i;</span>
-<span class="nc" id="L141">                int screenY1 = middleY - (int) (y1 * SCALE);</span>
-<span class="nc" id="L142">                int screenX2 = i + 1;</span>
-<span class="nc" id="L143">                int screenY2 = middleY - (int) (y2 * SCALE);</span>
+<span class="nc" id="L143">                int screenX1 = i;</span>
+<span class="nc" id="L144">                int screenY1 = middleY - (int) (y1 * SCALE);</span>
+<span class="nc" id="L145">                int screenX2 = i + 1;</span>
+<span class="nc" id="L146">                int screenY2 = middleY - (int) (y2 * SCALE);</span>
 
-<span class="nc" id="L145">                g.drawLine(screenX1, screenY1, screenX2, screenY2);</span>
-<span class="nc" id="L146">                g.drawLine(screenX1, screenY1 + 1, screenX2, screenY2 + 1);</span>
-<span class="nc" id="L147">                g.drawLine(screenX1, screenY1 - 1, screenX2, screenY2 - 1);</span>
+<span class="nc" id="L148">                g.drawLine(screenX1, screenY1, screenX2, screenY2);</span>
+<span class="nc" id="L149">                g.drawLine(screenX1, screenY1 + 1, screenX2, screenY2 + 1);</span>
+<span class="nc" id="L150">                g.drawLine(screenX1, screenY1 - 1, screenX2, screenY2 - 1);</span>
             }
-<span class="nc" id="L149">        } catch (Exception e) {</span>
+<span class="nc" id="L152">        } catch (Exception e) {</span>
         }
-<span class="nc" id="L151">    }</span>
+<span class="nc" id="L154">    }</span>
 
     private void drawAxisDivisions(Graphics g) {
-<span class="nc" id="L154">        g.setColor(Color.WHITE);</span>
+<span class="nc" id="L157">        g.setColor(Color.WHITE);</span>
 
-<span class="nc" id="L156">        double increment = 100.0 / SCALE;</span>
+<span class="nc" id="L159">        double increment = 100.0 / SCALE;</span>
 
         // X-axis positive divisions
-<span class="nc bnc" id="L159" title="All 2 branches missed.">        for (double i = 0; i &lt; numberOfXdivisions; i += increment) {</span>
-<span class="nc" id="L160">            int x = middleX + (int) (i * SCALE);</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">        for (double i = 0; i &lt; numberOfXdivisions; i += increment) {</span>
+<span class="nc" id="L163">            int x = middleX + (int) (i * SCALE);</span>
 
-<span class="nc" id="L162">            g.drawLine(x, middleY - divisionsSize, x, middleY + divisionsSize);</span>
-<span class="nc bnc" id="L163" title="All 2 branches missed.">            if (i != 0) {</span>
-<span class="nc" id="L164">                g.drawString(String.format(&quot;%.2f&quot;, i), x - 15, middleY + 20);</span>
+<span class="nc" id="L165">            g.drawLine(x, middleY - divisionsSize, x, middleY + divisionsSize);</span>
+<span class="nc bnc" id="L166" title="All 2 branches missed.">            if (i != 0) {</span>
+<span class="nc" id="L167">                g.drawString(String.format(&quot;%.2f&quot;, i), x - 15, middleY + 20);</span>
             }
         }
 
         // X-axis negative divisions
-<span class="nc bnc" id="L169" title="All 2 branches missed.">        for (double i = 0; i &gt; -numberOfXdivisions; i -= increment) {</span>
-<span class="nc" id="L170">            int x = middleX + (int) (i * SCALE);</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">        for (double i = 0; i &gt; -numberOfXdivisions; i -= increment) {</span>
+<span class="nc" id="L173">            int x = middleX + (int) (i * SCALE);</span>
 
-<span class="nc" id="L172">            g.drawLine(x, middleY - divisionsSize, x, middleY + divisionsSize);</span>
-<span class="nc bnc" id="L173" title="All 2 branches missed.">            if (i != 0) {</span>
-<span class="nc" id="L174">                g.drawString(String.format(&quot;%.2f&quot;, i), x - 15, middleY + 20);</span>
+<span class="nc" id="L175">            g.drawLine(x, middleY - divisionsSize, x, middleY + divisionsSize);</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">            if (i != 0) {</span>
+<span class="nc" id="L177">                g.drawString(String.format(&quot;%.2f&quot;, i), x - 15, middleY + 20);</span>
             }
         }
 
         // Y-axis negative divisions
-<span class="nc bnc" id="L179" title="All 2 branches missed.">        for (double i = 0; i &lt; numberOfYdivisions; i += increment) {</span>
-<span class="nc" id="L180">            int y = middleY + (int) (i * SCALE);</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">        for (double i = 0; i &lt; numberOfYdivisions; i += increment) {</span>
+<span class="nc" id="L183">            int y = middleY + (int) (i * SCALE);</span>
 
-<span class="nc" id="L182">            g.drawLine(middleX - divisionsSize, y, middleX + divisionsSize, y);</span>
-<span class="nc bnc" id="L183" title="All 2 branches missed.">            if (i != 0) {</span>
-<span class="nc" id="L184">                g.drawString(String.format(&quot;%.2f&quot;, -i), middleX - 30, y + 5);</span>
+<span class="nc" id="L185">            g.drawLine(middleX - divisionsSize, y, middleX + divisionsSize, y);</span>
+<span class="nc bnc" id="L186" title="All 2 branches missed.">            if (i != 0) {</span>
+<span class="nc" id="L187">                g.drawString(String.format(&quot;%.2f&quot;, -i), middleX - 30, y + 5);</span>
             }
         }
 
         // Y-axis positive divisions
-<span class="nc bnc" id="L189" title="All 2 branches missed.">        for (double i = 0; i &gt; -numberOfYdivisions; i -= increment) {</span>
-<span class="nc" id="L190">            int y = middleY + (int) (i * SCALE);</span>
+<span class="nc bnc" id="L192" title="All 2 branches missed.">        for (double i = 0; i &gt; -numberOfYdivisions; i -= increment) {</span>
+<span class="nc" id="L193">            int y = middleY + (int) (i * SCALE);</span>
 
-<span class="nc" id="L192">            g.drawLine(middleX - divisionsSize, y, middleX + divisionsSize, y);</span>
-<span class="nc bnc" id="L193" title="All 2 branches missed.">            if (i != 0) {</span>
-<span class="nc" id="L194">                g.drawString(String.format(&quot;%.2f&quot;, -i), middleX - 30, y + 5);</span>
+<span class="nc" id="L195">            g.drawLine(middleX - divisionsSize, y, middleX + divisionsSize, y);</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">            if (i != 0) {</span>
+<span class="nc" id="L197">                g.drawString(String.format(&quot;%.2f&quot;, -i), middleX - 30, y + 5);</span>
             }
         }
-<span class="nc" id="L197">    }</span>
+<span class="nc" id="L200">    }</span>
 
     public void setNumberOfXdivisions() {
-<span class="nc" id="L200">        int positiveSide = (getWidth() - middleX) / SCALE;</span>
-<span class="nc" id="L201">        int negativeSide = middleX / SCALE;</span>
-<span class="nc" id="L202">        this.numberOfXdivisions = Math.max(positiveSide, negativeSide) + 1;</span>
-<span class="nc" id="L203">    }</span>
+<span class="nc" id="L203">        int positiveSide = (getWidth() - middleX) / SCALE;</span>
+<span class="nc" id="L204">        int negativeSide = middleX / SCALE;</span>
+<span class="nc" id="L205">        this.numberOfXdivisions = Math.max(positiveSide, negativeSide) + 1;</span>
+<span class="nc" id="L206">    }</span>
 
     public void setNumberOfYdivisions() {
-<span class="nc" id="L206">        int negativeSide = (getHeight() - middleY) / SCALE + 1;</span>
-<span class="nc" id="L207">        int positiveSide = middleY / SCALE;</span>
-<span class="nc" id="L208">        this.numberOfYdivisions = Math.max(positiveSide, negativeSide) + 1;</span>
-<span class="nc" id="L209">    }</span>
+<span class="nc" id="L209">        int negativeSide = (getHeight() - middleY) / SCALE + 1;</span>
+<span class="nc" id="L210">        int positiveSide = middleY / SCALE;</span>
+<span class="nc" id="L211">        this.numberOfYdivisions = Math.max(positiveSide, negativeSide) + 1;</span>
+<span class="nc" id="L212">    }</span>
 
     public void setMiddleX() {
-<span class="nc" id="L212">        this.middleX = getWidth() / 2 + offsetX;</span>
-<span class="nc" id="L213">    }</span>
+<span class="nc" id="L215">        this.middleX = getWidth() / 2 + offsetX;</span>
+<span class="nc" id="L216">    }</span>
 
     public void setMiddleY() {
-<span class="nc" id="L216">        this.middleY = getHeight() / 2 + offsetY;</span>
-<span class="nc" id="L217">    }</span>
+<span class="nc" id="L219">        this.middleY = getHeight() / 2 + offsetY;</span>
+<span class="nc" id="L220">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

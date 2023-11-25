@@ -4,73 +4,86 @@ import java.awt.Color;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import expressionEvaluator.Parser;
+import expressionEvaluator.ExpressionEvaluator;
+
 
 public class Expression implements JsonConvertible {
-<span class="nc" id="L10">    Parser parser = new Parser();</span>
-<span class="nc" id="L11">    Color color = new Color(255, 139, 142);</span>
+<span class="pc" id="L11">    ExpressionEvaluator evaluator = new ExpressionEvaluator();</span>
+<span class="pc" id="L12">    Color color = new Color(255, 139, 142);</span>
 
-<span class="nc" id="L13">    Expression() {</span>
-<span class="nc" id="L14">    }</span>
+<span class="nc" id="L14">    public Expression() {</span>
+<span class="nc" id="L15">    }</span>
 
-<span class="nc" id="L16">    Expression(Color color) {</span>
-<span class="nc" id="L17">        this.color = color;</span>
-<span class="nc" id="L18">    }</span>
+<span class="nc" id="L17">    public Expression(String expression) throws Exception {</span>
+<span class="nc" id="L18">        update(expression);</span>
+<span class="nc" id="L19">    }</span>
 
-<span class="nc" id="L20">    Expression(String expression, Color color) throws Exception {</span>
-<span class="nc" id="L21">        update(expression);</span>
+<span class="nc" id="L21">    public Expression(Color color) {</span>
 <span class="nc" id="L22">        this.color = color;</span>
 <span class="nc" id="L23">    }</span>
 
-    void update(String expression) throws Exception {
-<span class="nc" id="L26">        parser.parse(expression);</span>
-<span class="nc" id="L27">    }</span>
+<span class="fc" id="L25">    public Expression(String expression, Color color) throws Exception {</span>
+<span class="fc" id="L26">        update(expression);</span>
+<span class="fc" id="L27">        this.color = color;</span>
+<span class="fc" id="L28">    }</span>
 
-    void setColor(Color color) {
-<span class="nc" id="L30">        this.color = color;</span>
-<span class="nc" id="L31">    }</span>
+    public String getExpression() {
+<span class="fc" id="L31">        return evaluator.getExpression();</span>
+    }
+
+    public void update(String expression) throws Exception {
+<span class="fc" id="L35">        evaluator.parse(expression);</span>
+<span class="fc" id="L36">    }</span>
+
+    public void setColor(Color color) {
+<span class="fc" id="L39">        this.color = color;</span>
+<span class="fc" id="L40">    }</span>
+
+    public Color getColor() {
+<span class="fc" id="L43">        return color;</span>
+    }
 
     @Override
     public JSONObject getJSONObject() {
-<span class="nc" id="L35">        JSONObject jsonObject = new JSONObject();</span>
-<span class="nc" id="L36">        jsonObject.put(&quot;expression&quot;, parser.getExpression());</span>
-<span class="nc" id="L37">        jsonObject.put(&quot;color&quot;, colorToJSONArray(color));</span>
-<span class="nc" id="L38">        return jsonObject;</span>
+<span class="fc" id="L48">        JSONObject jsonObject = new JSONObject();</span>
+<span class="fc" id="L49">        jsonObject.put(&quot;expression&quot;, evaluator.getExpression());</span>
+<span class="fc" id="L50">        jsonObject.put(&quot;color&quot;, colorToJSONArray(color));</span>
+<span class="fc" id="L51">        return jsonObject;</span>
     }
 
     @Override
     public void setJSONObject(JSONObject jsonObject) {
-<span class="nc" id="L43">        String expression = (String) jsonObject.get(&quot;expression&quot;);</span>
-<span class="nc" id="L44">        parser.setExpression(expression);</span>
+<span class="fc" id="L56">        String expression = (String) jsonObject.get(&quot;expression&quot;);</span>
+<span class="fc" id="L57">        evaluator.setExpression(expression);</span>
         try {
-<span class="nc" id="L46">            update(expression);</span>
-<span class="nc" id="L47">        } catch (Exception e) {</span>
-<span class="nc" id="L48">            e.printStackTrace();</span>
+<span class="fc" id="L59">            update(expression);</span>
+<span class="pc" id="L60">        } catch (Exception e) {</span>
+<span class="nc" id="L61">            e.printStackTrace();</span>
         }
 
-<span class="nc" id="L51">        setColor(JSONArrayToColor(jsonObject));</span>
-<span class="nc" id="L52">    }</span>
+<span class="fc" id="L64">        setColor(JSONArrayToColor(jsonObject));</span>
+<span class="fc" id="L65">    }</span>
 
-    private JSONArray colorToJSONArray(Color color) {
-<span class="nc" id="L55">        JSONArray colorArray = new JSONArray();</span>
-<span class="nc" id="L56">        colorArray.add(color.getRed());</span>
-<span class="nc" id="L57">        colorArray.add(color.getGreen());</span>
-<span class="nc" id="L58">        colorArray.add(color.getBlue());</span>
-<span class="nc" id="L59">        return colorArray;</span>
+    public JSONArray colorToJSONArray(Color color) {
+<span class="fc" id="L68">        JSONArray colorArray = new JSONArray();</span>
+<span class="fc" id="L69">        colorArray.add(color.getRed());</span>
+<span class="fc" id="L70">        colorArray.add(color.getGreen());</span>
+<span class="fc" id="L71">        colorArray.add(color.getBlue());</span>
+<span class="fc" id="L72">        return colorArray;</span>
     }
 
-    private Color JSONArrayToColor(JSONObject jsonObject) {
-<span class="nc" id="L63">        JSONArray colorArray = (JSONArray) jsonObject.get(&quot;color&quot;);</span>
-<span class="nc" id="L64">        int red = ((Long) colorArray.get(0)).intValue();</span>
-<span class="nc" id="L65">        int green = ((Long) colorArray.get(1)).intValue();</span>
-<span class="nc" id="L66">        int blue = ((Long) colorArray.get(2)).intValue();</span>
+    public Color JSONArrayToColor(JSONObject jsonObject) {
+<span class="fc" id="L76">        JSONArray colorArray = (JSONArray) jsonObject.get(&quot;color&quot;);</span>
+<span class="fc" id="L77">        int red = ((Long) colorArray.get(0)).intValue();</span>
+<span class="fc" id="L78">        int green = ((Long) colorArray.get(1)).intValue();</span>
+<span class="fc" id="L79">        int blue = ((Long) colorArray.get(2)).intValue();</span>
 
-<span class="nc" id="L68">        return new Color(red, green, blue);</span>
+<span class="fc" id="L81">        return new Color(red, green, blue);</span>
     }
 
     @Override
     public String toString() {
-<span class="nc" id="L73">        return parser.getExpression()+color.toString();</span>
+<span class="nc" id="L86">        return evaluator.getExpression()+color.toString();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

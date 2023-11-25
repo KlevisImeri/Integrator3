@@ -52,14 +52,13 @@ public class ExpressionWriter extends JPanel {
 <span class="nc" id="L52">            textField.setBorder(FunctionTextField.goodLineBorder);</span>
 <span class="nc" id="L53">        } catch (Exception e) {</span>
 <span class="nc" id="L54">            System.out.println(e.getMessage());</span>
-<span class="nc" id="L55">            e.printStackTrace();</span>
-<span class="nc" id="L56">            textField.setBorder(FunctionTextField.badLineBorder);</span>
+<span class="nc" id="L55">            textField.setBorder(FunctionTextField.badLineBorder);</span>
         }
-<span class="nc" id="L58">        textField.repaint();</span>
-<span class="nc" id="L59">    }</span>
+<span class="nc" id="L57">        textField.repaint();</span>
+<span class="nc" id="L58">    }</span>
 
     public void close() {
-<span class="nc" id="L62">        controller.removeFunction(function);</span>
-<span class="nc" id="L63">    }</span>
+<span class="nc" id="L61">        controller.removeFunction(function);</span>
+<span class="nc" id="L62">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
-Test set: TestParser
+Test set: TestEvaluator
 -------------------------------------------------------------------------------
-Tests run: 36, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.038 s - in TestParser
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.196 s - in TestEvaluator

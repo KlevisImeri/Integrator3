@@ -12,9 +12,9 @@ public class Tree&lt;T&gt; implements Serializable {
 
 <span class="fc" id="L13">    public Tree() {}</span>
 
-<span class="nc" id="L15">    public Tree(T data) {</span>
-<span class="nc" id="L16">        this.data = data;</span>
-<span class="nc" id="L17">    }</span>
+<span class="fc" id="L15">    public Tree(T data) {</span>
+<span class="fc" id="L16">        this.data = data;</span>
+<span class="fc" id="L17">    }</span>
 
 <span class="nc" id="L19">    public Tree(T data, Tree&lt;T&gt; parent) {</span>
 <span class="nc" id="L20">        this.data = data;</span>
@@ -25,75 +25,78 @@ public class Tree&lt;T&gt; implements Serializable {
 <span class="fc" id="L25">        return children;</span>
     }
 
+    public Tree&lt;T&gt; getParent() {
+<span class="fc" id="L29">        return this.parent;</span>
+    }
+
     public void setParent(Tree&lt;T&gt; parent) {
-        //parent.addChild(this);
-<span class="fc" id="L30">        this.parent = parent;</span>
-<span class="fc" id="L31">    }</span>
+<span class="fc" id="L33">        this.parent = parent;</span>
+<span class="fc" id="L34">    }</span>
 
     public void addChild(T data) {
-<span class="nc" id="L34">        Tree&lt;T&gt; child = new Tree&lt;T&gt;(data);</span>
-<span class="nc" id="L35">        child.setParent(this);</span>
-<span class="nc" id="L36">        this.children.add(child);</span>
-<span class="nc" id="L37">    }</span>
+<span class="nc" id="L37">        Tree&lt;T&gt; child = new Tree&lt;T&gt;(data);</span>
+<span class="nc" id="L38">        child.setParent(this);</span>
+<span class="nc" id="L39">        this.children.add(child);</span>
+<span class="nc" id="L40">    }</span>
 
     public void addChild(Tree&lt;T&gt; child) {
-<span class="fc" id="L40">        child.setParent(this);</span>
-<span class="fc" id="L41">        this.children.add(child);</span>
-<span class="fc" id="L42">    }</span>
+<span class="fc" id="L43">        child.setParent(this);</span>
+<span class="fc" id="L44">        this.children.add(child);</span>
+<span class="fc" id="L45">    }</span>
 
     public T getData() {
-<span class="fc" id="L45">        return this.data;</span>
+<span class="fc" id="L48">        return this.data;</span>
     }
 
     public void setData(T data) {
-<span class="fc" id="L49">        this.data = data;</span>
-<span class="fc" id="L50">    }</span>
+<span class="fc" id="L52">        this.data = data;</span>
+<span class="fc" id="L53">    }</span>
 
     public boolean isRoot() {
-<span class="nc bnc" id="L53" title="All 2 branches missed.">        return (this.parent == null);</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        return (this.parent == null);</span>
     }
 
     public boolean isLeaf() {
-<span class="nc bnc" id="L57" title="All 2 branches missed.">        return this.children.size() == 0;</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        return this.children.size() == 0;</span>
     }
 
     public void removeParent() {
-<span class="nc" id="L61">        this.parent = null;</span>
-<span class="nc" id="L62">    }</span>
+<span class="fc" id="L64">        this.parent = null;</span>
+<span class="fc" id="L65">    }</span>
 
     public void print() {
-<span class="nc" id="L65">        print(&quot;&quot;, true);</span>
-<span class="nc" id="L66">    }</span>
+<span class="fc" id="L68">        print(&quot;&quot;, true);</span>
+<span class="fc" id="L69">    }</span>
 
     private void print(String prefix, boolean isTail) {
-<span class="nc bnc" id="L69" title="All 2 branches missed.">        System.out.println(prefix + (isTail ? &quot;└── &quot; : &quot;├── &quot;) + data);</span>
-<span class="nc" id="L70">        List&lt;Tree&lt;T&gt;&gt; children = this.getChildren();</span>
-<span class="nc bnc" id="L71" title="All 2 branches missed.">        for (int i = 0; i &lt; children.size() - 1; i++) {</span>
-<span class="nc bnc" id="L72" title="All 2 branches missed.">            children.get(i).print(prefix + (isTail ? &quot;    &quot; : &quot;│   &quot;), false);</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        System.out.println(prefix + (isTail ? &quot;└── &quot; : &quot;├── &quot;) + data);</span>
+<span class="fc" id="L73">        List&lt;Tree&lt;T&gt;&gt; children = this.getChildren();</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        for (int i = 0; i &lt; children.size() - 1; i++) {</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">            children.get(i).print(prefix + (isTail ? &quot;    &quot; : &quot;│   &quot;), false);</span>
         }
-<span class="nc bnc" id="L74" title="All 2 branches missed.">        if (!children.isEmpty()) {</span>
-<span class="nc bnc" id="L75" title="All 2 branches missed.">            children.get(children.size() - 1).print(prefix + (isTail ? &quot;    &quot; : &quot;│   &quot;), true);</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        if (!children.isEmpty()) {</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">            children.get(children.size() - 1).print(prefix + (isTail ? &quot;    &quot; : &quot;│   &quot;), true);</span>
         }
-<span class="nc" id="L77">    }</span>
+<span class="fc" id="L80">    }</span>
 
     private StringBuilder treeToString(StringBuilder prefix, boolean isTail) {
-<span class="fc" id="L80">        StringBuilder sb = new StringBuilder();</span>
-<span class="fc bfc" id="L81" title="All 2 branches covered.">        sb.append(prefix).append(isTail ? &quot;└── &quot; : &quot;├── &quot;).append(data).append(&quot;\n&quot;);</span>
+<span class="fc" id="L83">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        sb.append(prefix).append(isTail ? &quot;└── &quot; : &quot;├── &quot;).append(data).append(&quot;\n&quot;);</span>
     
-<span class="fc" id="L83">        List&lt;Tree&lt;T&gt;&gt; children = this.getChildren();</span>
-<span class="fc bfc" id="L84" title="All 2 branches covered.">        for (int i = 0; i &lt; children.size() - 1; i++) {</span>
-<span class="fc bfc" id="L85" title="All 2 branches covered.">            sb.append(children.get(i).treeToString(new StringBuilder().append(prefix).append(isTail ? &quot;    &quot; : &quot;│   &quot;), false));</span>
+<span class="fc" id="L86">        List&lt;Tree&lt;T&gt;&gt; children = this.getChildren();</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        for (int i = 0; i &lt; children.size() - 1; i++) {</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">            sb.append(children.get(i).treeToString(new StringBuilder().append(prefix).append(isTail ? &quot;    &quot; : &quot;│   &quot;), false));</span>
         }
     
-<span class="fc bfc" id="L88" title="All 2 branches covered.">        if (!children.isEmpty()) {</span>
-<span class="fc bfc" id="L89" title="All 2 branches covered.">            sb.append(children.get(children.size() - 1).treeToString(new StringBuilder().append(prefix).append(isTail ? &quot;    &quot; : &quot;│   &quot;), true));</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        if (!children.isEmpty()) {</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">            sb.append(children.get(children.size() - 1).treeToString(new StringBuilder().append(prefix).append(isTail ? &quot;    &quot; : &quot;│   &quot;), true));</span>
         }
     
-<span class="fc" id="L92">        return sb;</span>
+<span class="fc" id="L95">        return sb;</span>
     }
     
     public String toString() {
-<span class="fc" id="L96">        return treeToString(new StringBuilder(), true).toString();</span>
+<span class="fc" id="L99">        return treeToString(new StringBuilder(), true).toString();</span>
     }
     
 }

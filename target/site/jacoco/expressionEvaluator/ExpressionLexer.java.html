@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExpressionLexer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Klevis Report</a> &gt; <a href="index.source.html" class="el_package">expressionEvaluator</a> &gt; <span class="el_source">ExpressionLexer.java</span></div><h1>ExpressionLexer.java</h1><pre class="source lang-java linenums">package expressionEvaluator;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class ExpressionLexer implements Lexer {
+    //store the expression 
+    protected String expression;
+    //for counting the number of parantheses
+<span class="fc" id="L12">    int Paren_left = 0;</span>
+<span class="fc" id="L13">    int Paren_right = 0;</span>
+    //store the TokenList                                                  
+<span class="fc" id="L15">    protected List&lt;Token&gt; tokenList = new ArrayList&lt;&gt;();                                  </span>
+    //To store the precedence nuber of each operator
+<span class="fc" id="L17">    protected final Map&lt;Character, Integer&gt; operatorPrecedence = new HashMap&lt;&gt;();         </span>
+    //To sore the arity(how many parameters does it take) of each function.
+    //Example: 
+    // - sin(x)     has arrity 1
+    // - log(b,x)   has arrity 2
+<span class="fc" id="L22">    protected final Map&lt;String, Integer&gt; functionArity = new HashMap&lt;&gt;();</span>
+
+
+    //Constructor | Setters | Getters
+<span class="fc" id="L26">    public ExpressionLexer() {</span>
+        // Initialize operator operatorPrecedence
+<span class="fc" id="L28">        operatorPrecedence.put('+', 1);</span>
+<span class="fc" id="L29">        operatorPrecedence.put('-', 1);</span>
+<span class="fc" id="L30">        operatorPrecedence.put('*', 2);</span>
+<span class="fc" id="L31">        operatorPrecedence.put('/', 2);</span>
+<span class="fc" id="L32">        operatorPrecedence.put('^', 3);</span>
+
+        // Initialize supported functions and their arities
+<span class="fc" id="L35">        functionArity.put(&quot;sin&quot;, 1);</span>
+<span class="fc" id="L36">        functionArity.put(&quot;cos&quot;, 1);</span>
+<span class="fc" id="L37">        functionArity.put(&quot;tan&quot;, 1);</span>
+<span class="fc" id="L38">        functionArity.put(&quot;log&quot;, 2);</span>
+
+<span class="fc" id="L40">        setExpression(null);</span>
+<span class="fc" id="L41">    }</span>
+
+    public ExpressionLexer(String expression) {
+<span class="nc" id="L44">        this();</span>
+<span class="nc" id="L45">        setExpression(expression);</span>
+<span class="nc" id="L46">    }</span>
+
+    public void setExpression(String expression) {
+<span class="fc" id="L49">        this.expression = expression;</span>
+<span class="fc" id="L50">    }</span>
+
+    public String getExpression(){
+<span class="fc" id="L53">        return this.expression;</span>
+    }
+
+    public List&lt;Token&gt; getTokenList() {
+<span class="nc" id="L57">        return tokenList;</span>
+    }
+
+
+    //helper fucntions
+    private TokenType getTokenTypeOfLastElement() {
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        return  tokenList.size() &gt; 0 ? tokenList.get(tokenList.size() - 1).getType() : TokenType.NONE;</span>
+    }
+    private boolean isDigit(int i) {
+<span class="fc bfc" id="L66" title="All 4 branches covered.">        return Character.isDigit(expression.charAt(i)) || expression.charAt(i) == '.';</span>
+    }
+    private void addMultiplicationSign() {
+        /*  numbers,parenthses and variables can be multiplied with 
+            each other without the need of multiplicatoin sign      */
+<span class="fc" id="L71">        TokenType lastElement = getTokenTypeOfLastElement();</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        switch (lastElement) {</span>
+            case PAREN_RIGHT: // ) * [&lt;num&gt;, ( , x, const]
+            case VARIABLE: // x * [&lt;num&gt;, ( , x, const]
+            case NUMBER: // &lt;num&gt; * [&lt;num&gt;, ( , x, const]
+<span class="fc" id="L76">                tokenList.add(new Token(TokenType.OPERATOR, &quot;*&quot;));</span>
+<span class="fc" id="L77">                break;</span>
+            default:
+                break;
+        }
+<span class="fc" id="L81">    }</span>
+    //is 
+    private boolean isLastTokenNumber(int i) {
+<span class="nc bnc" id="L84" title="All 4 branches missed.">        return !tokenList.isEmpty() &amp;&amp; tokenList.get(tokenList.size() - 1).getType() == TokenType.NUMBER;</span>
+    }
+    private boolean isLastTokenDivisonOperator(int i) {
+<span class="fc bfc" id="L87" title="All 4 branches covered.">        return !tokenList.isEmpty() &amp;&amp; tokenList.get(tokenList.size() - 1).getValue().equals(&quot;/&quot;);</span>
+    }
+    private boolean isValidCharForNaming(int i) {
+<span class="pc bpc" id="L90" title="1 of 4 branches missed.">        return Character.isLetter(expression.charAt(i)) || expression.charAt(i) == '_';</span>
+    }
+    private boolean isCurrentTokenRightParen(int i) {
+<span class="nc bnc" id="L93" title="All 4 branches missed.">        return !tokenList.isEmpty() &amp;&amp; tokenList.get(tokenList.size() - 1).getValue().equals(&quot;)&quot;);</span>
+    }
+    private boolean isLastTokenVariable(int i) {
+<span class="nc bnc" id="L96" title="All 4 branches missed.">        return !tokenList.isEmpty() &amp;&amp; tokenList.get(tokenList.size() - 1).getType() == TokenType.VARIABLE;</span>
+    }
+
+
+    //tokenize functions
+    private int tokenizeAdditonOrSubtraction(int i) throws IllegalArgumentException {
+<span class="fc" id="L102">        int size = expression.length();</span>
+<span class="fc" id="L103">        TokenType lastElement = getTokenTypeOfLastElement();</span>
+
+<span class="pc bpc" id="L105" title="2 of 4 branches missed.">        switch (lastElement) {</span>
+            case NONE: //emty+x -&gt; 0+x
+            case PAREN_LEFT: //+&lt;token&gt; -&gt; 0+&lt;token&gt;
+<span class="fc" id="L108">                tokenList.add(new Token(TokenType.NUMBER, &quot;0&quot;));</span>
+<span class="fc" id="L109">                break;</span>
+            case OPERATOR: //-+ or *+ ...
+<span class="nc" id="L111">                throw new IllegalArgumentException(&quot;You have 2 operators one after the other!&quot;);</span>
+            case COMMA: //,+
+<span class="nc" id="L113">                throw new IllegalArgumentException(&quot;The left of operator '&quot; + expression.charAt(i) + &quot;' is a wrong token!&quot;);</span>
+            default: //+&lt;end of stringa&gt; not possible should be +&lt;token&gt;
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">                if (i + 1 &gt;= size) {</span>
+<span class="nc" id="L116">                    throw new IllegalArgumentException(&quot;The right of operator '&quot; + expression.charAt(i) + &quot;' is empty!&quot;);</span>
+                }
+        }
+
+<span class="fc" id="L120">        tokenList.add(new Token(TokenType.OPERATOR, String.valueOf(expression.charAt(i))));</span>
+<span class="fc" id="L121">        return ++i;</span>
+    }
+
+    private int tokenizeMultiplicatoinDivisionOrPower(int i) throws IllegalArgumentException {
+<span class="fc" id="L125">        int size = expression.length();</span>
+<span class="fc" id="L126">        TokenType lastElement = getTokenTypeOfLastElement();</span>
+        
+<span class="pc bpc" id="L128" title="3 of 4 branches missed.">        switch (lastElement) {</span>
+            case NONE: // empty^x
+<span class="nc" id="L130">                throw new IllegalArgumentException(&quot;The operators '^''*''/' take a value on both sides!&quot;);</span>
+            case OPERATOR: //*^ +/ ...
+<span class="nc" id="L132">                throw new IllegalArgumentException(&quot;You have 2 operators one after the other!&quot;);</span>
+            case COMMA: //,^
+            case PAREN_LEFT: //(^
+<span class="nc" id="L135">                throw new IllegalArgumentException(&quot;The left of operator '&quot; + expression.charAt(i) + &quot;' is a wrong token!&quot;);</span>
+            default:  //+&lt;end of stringa&gt; not possible should be +&lt;token&gt;
+<span class="pc bpc" id="L137" title="1 of 2 branches missed.">                if (i + 1 &gt;= size) {</span>
+<span class="nc" id="L138">                    throw new IllegalArgumentException(&quot;The right of operator '&quot; + expression.charAt(i) + &quot;' is empty!&quot;);</span>
+                }
+        }
+
+<span class="fc" id="L142">        tokenList.add(new Token(TokenType.OPERATOR, String.valueOf(expression.charAt(i))));</span>
+<span class="fc" id="L143">        return ++i;</span>
+    }
+
+    private int tokenizeNumber(int i) throws IllegalArgumentException {
+<span class="fc" id="L147">        int size = expression.length();</span>
+
+<span class="fc" id="L149">        StringBuilder numberString = new StringBuilder();</span>
+<span class="fc bfc" id="L150" title="All 4 branches covered.">        while (i &lt; size &amp;&amp; isDigit(i)) {</span>
+<span class="fc" id="L151">            numberString.append(expression.charAt(i));</span>
+<span class="fc" id="L152">            i++; </span>
+        }
+
+<span class="fc" id="L155">        double number = Double.parseDouble(numberString.toString());</span>
+<span class="pc bpc" id="L156" title="1 of 4 branches missed.">        if (isLastTokenDivisonOperator(i) &amp;&amp; number == 0) {</span>
+<span class="nc" id="L157">            throw new ArithmeticException(&quot;Divison by zero is prohibited!&quot;);</span>
+        }
+
+<span class="fc" id="L160">        addMultiplicationSign();</span>
+
+<span class="fc" id="L162">        tokenList.add(new Token(TokenType.NUMBER, numberString.toString()));</span>
+<span class="fc" id="L163">        return i;</span>
+    }
+
+    private int tokenizeVariable(int i) {
+<span class="fc" id="L167">        addMultiplicationSign();</span>
+<span class="fc" id="L168">        tokenList.add(new Token(TokenType.VARIABLE, &quot;x&quot;));</span>
+<span class="fc" id="L169">        return ++i;</span>
+    }
+
+    private int tokenizeFucntionOrConstant(int i) throws IllegalArgumentException {
+<span class="fc" id="L173">        int size = expression.length();</span>
+    
+<span class="fc" id="L175">        StringBuilder name = new StringBuilder();</span>
+<span class="fc bfc" id="L176" title="All 4 branches covered.">        while (i &lt; size &amp;&amp; isValidCharForNaming(i)) {</span>
+<span class="fc" id="L177">            name.append(expression.charAt(i));</span>
+<span class="fc" id="L178">            i++;</span>
+        }
+
+<span class="fc" id="L181">        addMultiplicationSign();</span>
+
+<span class="fc bfc" id="L183" title="All 3 branches covered.">        switch (name.toString()) {</span>
+            case &quot;e&quot;:
+<span class="fc" id="L185">                tokenList.add(new Token(TokenType.EULER, name.toString()));</span>
+<span class="fc" id="L186">                break;</span>
+            case &quot;pi&quot;:
+<span class="fc" id="L188">                tokenList.add(new Token(TokenType.PI, name.toString()));</span>
+<span class="fc" id="L189">                break;</span>
+            default: //fucntion
+<span class="pc bpc" id="L191" title="1 of 2 branches missed.">                if (!functionArity.containsKey(name.toString())) {</span>
+<span class="nc" id="L192">                    throw new IllegalArgumentException(&quot;Invalid function name: &quot; + name);</span>
+                }
+<span class="fc" id="L194">                tokenList.add(new Token(TokenType.FUNCTION, name.toString()));</span>
+                break;
+        }
+        
+<span class="fc" id="L198">        return i;</span>
+    }
+
+    private int tokenizeParenLeft(int i) throws IllegalArgumentException {
+        
+<span class="fc" id="L203">        addMultiplicationSign();</span>
+
+<span class="fc" id="L205">        tokenList.add(new Token(TokenType.PAREN_LEFT, String.valueOf(expression.charAt(i))));</span>
+<span class="fc" id="L206">        Paren_left++;</span>
+<span class="fc" id="L207">        return ++i;</span>
+    }
+    
+    private int tokenizeParenRight(int i) throws IllegalArgumentException {
+<span class="fc" id="L211">        tokenList.add(new Token(TokenType.PAREN_RIGHT, String.valueOf(expression.charAt(i))));</span>
+<span class="fc" id="L212">        Paren_right++;</span>
+<span class="fc" id="L213">        return ++i;</span>
+    }
+
+    private int tokenizeComma(int i) throws IllegalArgumentException {
+<span class="fc" id="L217">        tokenList.add(new Token(TokenType.COMMA, String.valueOf(expression.charAt(i))));</span>
+<span class="fc" id="L218">        return ++i;</span>
+    }
+
+    public void tokenize() throws Exception {
+        // Preparation
+<span class="fc" id="L223">        tokenList.clear();</span>
+<span class="fc" id="L224">        Paren_left = 0;</span>
+<span class="fc" id="L225">        Paren_right = 0;</span>
+
+<span class="fc" id="L227">        int size = expression.length();</span>
+
+    
+        // Tokenizing
+<span class="fc" id="L231">        int i=0;</span>
+<span class="fc bfc" id="L232" title="All 2 branches covered.">        while (i &lt; size) {</span>
+<span class="fc" id="L233">            char currentChar = expression.charAt(i);</span>
+
+<span class="fc bfc" id="L235" title="All 8 branches covered.">            switch (currentChar) {</span>
+                case '+':
+                case '-':
+<span class="fc" id="L238">                    i = tokenizeAdditonOrSubtraction(i);</span>
+<span class="fc" id="L239">                    break;</span>
+                case '*':
+                case '/':
+                case '^':
+<span class="fc" id="L243">                    i = tokenizeMultiplicatoinDivisionOrPower(i);</span>
+<span class="fc" id="L244">                    break;</span>
+                case '(':
+<span class="fc" id="L246">                    i = tokenizeParenLeft(i);</span>
+<span class="fc" id="L247">                    break;</span>
+                case ')':
+<span class="fc" id="L249">                    i = tokenizeParenRight(i);</span>
+<span class="fc" id="L250">                    break;</span>
+                case ',':
+<span class="fc" id="L252">                    i = tokenizeComma(i);</span>
+<span class="fc" id="L253">                    break;</span>
+                case 'x':
+<span class="fc" id="L255">                    i = tokenizeVariable(i);</span>
+<span class="fc" id="L256">                    break;</span>
+                case ' ':
+<span class="fc" id="L258">                    i++;</span>
+<span class="fc" id="L259">                    break;</span>
+                default:
+<span class="fc bfc" id="L261" title="All 2 branches covered.">                    if (Character.isDigit(currentChar)) {</span>
+<span class="fc" id="L262">                        i = tokenizeNumber(i);</span>
+<span class="pc bpc" id="L263" title="1 of 2 branches missed.">                    } else if (Character.isLetter(currentChar)) {</span>
+<span class="fc" id="L264">                        i = tokenizeFucntionOrConstant(i);</span>
+<span class="fc" id="L265">                    } else {</span>
+<span class="nc" id="L266">                        throw new IllegalArgumentException(String.valueOf(currentChar));</span>
+                    }
+                    break;
+            }
+        }
+        
+        
+        // EXCEPTION HANDLING
+        // parentheses
+<span class="pc bpc" id="L275" title="1 of 2 branches missed.">        if (Paren_right != Paren_left) {</span>
+<span class="nc" id="L276">            throw new IllegalArgumentException(&quot;Mismatched '(' and ')'!&quot;);</span>
+        }
+        // arity of the functions
+<span class="fc bfc" id="L279" title="All 2 branches covered.">        for (int j = 0; j &lt; tokenList.size(); j++) {</span>
+<span class="fc bfc" id="L280" title="All 2 branches covered.">            if (tokenList.get(j).getType() == TokenType.FUNCTION) {</span>
+<span class="fc" id="L281">                validateArityOfFunction(j);</span>
+            }
+        }
+        
+        //printTokens();
+<span class="fc" id="L286">    }    </span>
+    
+    private void validateArityOfFunction(int i) throws IllegalArgumentException {
+<span class="fc" id="L289">        int numberOfCommas = 0;</span>
+<span class="fc" id="L290">        boolean functionHasParameters = false;</span>
+        
+<span class="pc bpc" id="L292" title="1 of 2 branches missed.">        if (tokenList.get(i + 1).getType() != TokenType.PAREN_LEFT) {</span>
+<span class="nc" id="L293">            throw new IllegalArgumentException(&quot;Functions should have '()' at the end!&quot;);</span>
+        }
+        
+<span class="fc bfc" id="L296" title="All 2 branches covered.">        for (int j = i + 2; tokenList.get(j).getType() != TokenType.PAREN_RIGHT; j++) {</span>
+<span class="fc bfc" id="L297" title="All 2 branches covered.">            if (tokenList.get(j).getType() == TokenType.COMMA) {</span>
+                // Check if the comma is in the right place
+<span class="fc" id="L299">                TokenType left = tokenList.get(j - 1).getType();</span>
+<span class="fc" id="L300">                TokenType right = tokenList.get(j + 1).getType();</span>
+<span class="pc bpc" id="L301" title="3 of 6 branches missed.">                if (left != TokenType.PAREN_LEFT &amp;&amp; left != TokenType.OPERATOR &amp;&amp; right != TokenType.PAREN_RIGHT) {</span>
+<span class="fc" id="L302">                    numberOfCommas++;</span>
+<span class="fc" id="L303">                } else {</span>
+<span class="nc" id="L304">                    throw new IllegalArgumentException(&quot;Function parameters and ',' are in the wrong place&quot;);</span>
+                }
+<span class="fc bfc" id="L306" title="All 2 branches covered.">            } else if (!functionHasParameters) {</span>
+<span class="fc" id="L307">                functionHasParameters = true;</span>
+            }
+        }
+    
+<span class="fc" id="L311">        int arity = 0;</span>
+<span class="pc bpc" id="L312" title="1 of 2 branches missed.">        if (functionHasParameters) {</span>
+<span class="fc" id="L313">            arity = 1 + numberOfCommas;</span>
+        }
+    
+<span class="pc bpc" id="L316" title="1 of 2 branches missed.">        if (arity != functionArity.get(tokenList.get(i).getValue())) {</span>
+<span class="nc" id="L317">            throw new IllegalArgumentException(&quot;The arity of the function is not correct!&quot;);</span>
+        }
+<span class="fc" id="L319">    }</span>
+
+    //print functoins
+    public String stringTokens() {
+<span class="fc" id="L323">        return tokenList.toString();</span>
+    }
+
+    public void printlistTokens() {
+<span class="nc" id="L327">        System.out.println(stringTokens());</span>
+<span class="nc" id="L328">    }</span>
+
+    public void printTokens() {
+<span class="nc" id="L331">        System.out.println(&quot;Lexer{&quot;);</span>
+<span class="nc" id="L332">        System.out.println(&quot; Function: &quot; + expression);</span>
+<span class="nc" id="L333">        System.out.print(&quot; Tokens: {&quot;);</span>
+
+<span class="nc" id="L335">        int count = 0;</span>
+<span class="nc bnc" id="L336" title="All 2 branches missed.">        for (Token token : tokenList) {</span>
+<span class="nc bnc" id="L337" title="All 2 branches missed.">            if (count % 3 == 0) {</span>
+<span class="nc" id="L338">                System.out.println();</span>
+<span class="nc" id="L339">                System.out.print(&quot;     &quot;);</span>
+            }
+<span class="nc" id="L341">            System.out.print(token + &quot; &quot;);</span>
+<span class="nc" id="L342">            count++;</span>
+        }
+
+<span class="nc" id="L345">        System.out.println(&quot;\n }&quot;);</span>
+<span class="nc" id="L346">        System.out.println(&quot;}&quot;);</span>
+<span class="nc" id="L347">    }</span>
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

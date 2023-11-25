@@ -71,7 +71,7 @@ public class Controller {
     }
     
     public void setExpression(Expression function, String newExpression) {
-<span class="nc" id="L74">        function.parser.setExpression(newExpression);</span>
+<span class="nc" id="L74">        function.evaluator.setExpression(newExpression);</span>
 <span class="nc" id="L75">    }</span>
 
     public void updateFuntion(Expression function,  String newExpression) throws Exception {
@@ -80,7 +80,7 @@ public class Controller {
 <span class="nc" id="L80">    }</span>
 
     public double evaluateFuntion(Expression function, double value) throws Exception {
-<span class="nc" id="L83">        return function.parser.eval(value);</span>
+<span class="nc" id="L83">        return function.evaluator.eval(value);</span>
     }
 
     public void colorFunction(Expression function, Color color) {
@@ -97,7 +97,7 @@ public class Controller {
     }
 
     public String getFunctionString(Expression function) {
-<span class="nc" id="L100">        return function.parser.getExpression();</span>
+<span class="nc" id="L100">        return function.evaluator.getExpression();</span>
     }
 
 
@@ -118,7 +118,7 @@ public class Controller {
 <span class="nc" id="L118">            JSONParser parser = new JSONParser();</span>
 <span class="nc" id="L119">            JSONObject jsonObject = (JSONObject) parser.parse(reader);</span>
 <span class="nc" id="L120">            this.functions.setJSONObject(jsonObject);</span>
-<span class="nc" id="L121">            this.printFuntions();</span>
+            //this.printFuntions();
 <span class="nc" id="L122">            callbackReload();</span>
 <span class="nc" id="L123">        } catch (Exception e) {</span>
 <span class="nc" id="L124">            e.printStackTrace();</span>

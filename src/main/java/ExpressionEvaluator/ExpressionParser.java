@@ -22,21 +22,12 @@ public class ExpressionParser extends ExpressionLexer implements Parser {
         opStack = new Stack<>();
         tokenize();
         shuntingYard();
-        printTokensRPN();
         parseTokens(tree);
-        printTree();
     }
 
     public void parse(String expression) throws Exception {
-        tree = new Tree<Token>();
-        tokensRPN = new Stack<>(); 
-        opStack = new Stack<>();
         setExpression(expression);
-        tokenize();
-        shuntingYard();
-        printTokensRPN();
-        parseTokens(tree);
-        printTree();
+        parse();
     }
 
     public Tree<Token> getTree() {

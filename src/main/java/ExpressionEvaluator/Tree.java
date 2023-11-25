@@ -25,8 +25,11 @@ public class Tree<T> implements Serializable {
         return children;
     }
 
+    public Tree<T> getParent() {
+        return this.parent;
+    }
+
     public void setParent(Tree<T> parent) {
-        //parent.addChild(this);
         this.parent = parent;
     }
 

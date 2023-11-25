@@ -4,7 +4,6 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import expressionEvaluator.ExpressionEvaluator;
-import expressionEvaluator.ExpressionParser;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -448,7 +447,7 @@ public class TestParser {
                                 ├── {VARIABLE: x}
                                 └── {NUMBER: 3}
                     """
-                },  //34
+                }, //34
                 {
                     "e^(x^2)*sin(x)",
                     "[{EULER: e}, {OPERATOR: ^}, {PAREN_LEFT: (}, {VARIABLE: x}, {OPERATOR: ^}, {NUMBER: 2}, {PAREN_RIGHT: )}, {OPERATOR: *}, {FUNCTION: sin}, {PAREN_LEFT: (}, {VARIABLE: x}, {PAREN_RIGHT: )}]",

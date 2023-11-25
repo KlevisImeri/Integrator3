@@ -1,1 +1,1 @@
-{"expressions":[{"expression":"sin(2sin(2sin(2sin(x))))","color":[204,0,102]},{"expression":"tan(x)","color":[255,51,255]},{"expression":"cos(x)","color":[255,153,51]},{"expression":"sin(x)","color":[250,207,207]},{"expression":"e^x","color":[250,207,207]}]};
+{"expressions":[{"expression":"sin(2sin(2sin(2sin(x))))","color":[204,0,102]},{"expression":"tan(x)","color":[255,51,255]},{"expression":"cos(x)","color":[255,153,51]},{"expression":"sin(x)","color":[250,207,207]},{"expression":"e^x","color":[250,207,207]}]}

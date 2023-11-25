@@ -52,7 +52,6 @@ public class ExpressionWriter extends JPanel {
             textField.setBorder(FunctionTextField.goodLineBorder);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            e.printStackTrace();
             textField.setBorder(FunctionTextField.badLineBorder);
         }
         textField.repaint();

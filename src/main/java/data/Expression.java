@@ -5,30 +5,42 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import expressionEvaluator.ExpressionEvaluator;
-import expressionEvaluator.ExpressionParser;
+
 
 public class Expression implements JsonConvertible {
     ExpressionEvaluator evaluator = new ExpressionEvaluator();
     Color color = new Color(255, 139, 142);
 
-    Expression() {
+    public Expression() {
     }
 
-    Expression(Color color) {
+    public Expression(String expression) throws Exception {
+        update(expression);
+    }
+
+    public Expression(Color color) {
         this.color = color;
     }
 
-    Expression(String expression, Color color) throws Exception {
+    public Expression(String expression, Color color) throws Exception {
         update(expression);
         this.color = color;
     }
 
-    void update(String expression) throws Exception {
+    public String getExpression() {
+        return evaluator.getExpression();
+    }
+
+    public void update(String expression) throws Exception {
         evaluator.parse(expression);
     }
 
-    void setColor(Color color) {
+    public void setColor(Color color) {
         this.color = color;
+    }
+
+    public Color getColor() {
+        return color;
     }
 
     @Override
@@ -52,7 +64,7 @@ public class Expression implements JsonConvertible {
         setColor(JSONArrayToColor(jsonObject));
     }
 
-    private JSONArray colorToJSONArray(Color color) {
+    public JSONArray colorToJSONArray(Color color) {
         JSONArray colorArray = new JSONArray();
         colorArray.add(color.getRed());
         colorArray.add(color.getGreen());
@@ -60,7 +72,7 @@ public class Expression implements JsonConvertible {
         return colorArray;
     }
 
-    private Color JSONArrayToColor(JSONObject jsonObject) {
+    public Color JSONArrayToColor(JSONObject jsonObject) {
         JSONArray colorArray = (JSONArray) jsonObject.get("color");
         int red = ((Long) colorArray.get(0)).intValue();
         int green = ((Long) colorArray.get(1)).intValue();

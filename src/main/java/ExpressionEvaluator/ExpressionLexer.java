@@ -282,7 +282,7 @@ public class ExpressionLexer implements Lexer {
             }
         }
         
-        printTokens();
+        //printTokens();
     }    
     
     private void validateArityOfFunction(int i) throws IllegalArgumentException {

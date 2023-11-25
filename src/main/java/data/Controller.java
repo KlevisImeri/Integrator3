@@ -118,7 +118,7 @@ public class Controller {
             JSONParser parser = new JSONParser();
             JSONObject jsonObject = (JSONObject) parser.parse(reader);
             this.functions.setJSONObject(jsonObject);
-            this.printFuntions();
+            //this.printFuntions();
             callbackReload();
         } catch (Exception e) {
             e.printStackTrace();
