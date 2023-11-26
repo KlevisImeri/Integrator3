@@ -2,6 +2,7 @@ package UI;
 
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.Color;
 import java.io.*;
@@ -18,12 +19,12 @@ public class Menu extends JMenuBar {
     private static final Color BLACK = new Color(15, 15, 15);
 
     Menu(Controller controller) {
+        
         this.controller = controller;
         openMenuItem.addActionListener(e -> openFile());
         saveMenuItem.addActionListener(e -> saveFile());
-
-        setBackground(BLACK);
         
+        setBackground(BLACK);
         fileMenu.setBackground(LIGHTBLACK); 
         fileMenu.setForeground(Color.WHITE);
         openMenuItem.setBackground(LIGHTBLACK);
@@ -33,6 +34,8 @@ public class Menu extends JMenuBar {
         fileMenu.add(openMenuItem);
         fileMenu.add(saveMenuItem);
         add(fileMenu);
+        
+        setBorder(null);
     }
 
     private void openFile() {

@@ -1,21 +1,29 @@
 package UI;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+
 import java.awt.*;
-import javax.swing.border.Border;
-import javax.swing.plaf.basic.BasicSplitPaneDivider;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
 import data.Controller;
 
 public class MainFrame extends JFrame {
     Controller controller;
     FunctionGrapher fGrapher;
     InputPanel inputPanel;
-    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, inputPanel, fGrapher);
-
+    JSplitPane splitPane;
+    private static final Color LIGHTBLACK = new Color(30, 31, 32);
+    private static final Color BLACK = new Color(15, 15, 15);
     public MainFrame(Controller controller, int WIDTH, int HEIGHT) {
         super("Function Grapher");
-
+        
+        UIManager.put("PopupMenu.border", new LineBorder(new Color(15,15,15)));
+        UIManager.put("Menu.selectionBackground", Color.LIGHT_GRAY);
+        UIManager.put("Menu.selectionForeground", Color.BLACK);
+        UIManager.put("MenuItem.selectionBackground", Color.LIGHT_GRAY);
+        UIManager.put("MenuItem.selectionForeground", Color.BLACK);
+        UIManager.put("Menu.border", new LineBorder(LIGHTBLACK));
+        UIManager.put("MenuItem.border", new LineBorder(LIGHTBLACK));
+    
         this.controller = controller;
         this.fGrapher = new FunctionGrapher(controller);
         this.inputPanel = new InputPanel(controller);
@@ -24,33 +32,25 @@ public class MainFrame extends JFrame {
         controller.addCallbackRun(this.fGrapher::repaint);
         controller.addCallbackReload(this.inputPanel::update);
         
-        setCleanSplitUI(splitPane);
+        CustomSplitPane.setCleanSplitUI(splitPane);
+        
         add(splitPane, BorderLayout.CENTER);
         setJMenuBar(new Menu(controller));
-
+        getJMenuBar().setBorder(null);
+        
         setSize(WIDTH, HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
-    }
-
-    static void setCleanSplitUI(JSplitPane splitPane) {
-        // Create a custom UI for the slider
-        BasicSplitPaneUI splitPaneUI = new BasicSplitPaneUI() {
-            @Override
-            public BasicSplitPaneDivider createDefaultDivider() {
-                return new BasicSplitPaneDivider(this) {
-                    @Override
-                    public void setBorder(Border b) {
-                        // Remove the border to make it look cleaner
-                    }
-                };
-            }
-        };
-
-        // Set the custom UI to the splitPane
-        splitPane.setResizeWeight(0.23);
-        splitPane.setBackground(new Color(15, 15, 15));
-        splitPane.setUI(splitPaneUI);
+        
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());    
+        } catch (UnsupportedLookAndFeelException 
+                | ClassNotFoundException 
+                | InstantiationException 
+                | IllegalAccessException  e) {
+            e.printStackTrace();
+        }
+        
     }
 }

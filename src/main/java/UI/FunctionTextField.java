@@ -21,6 +21,7 @@ public class FunctionTextField extends JTextField {
 
         setBackground(darkmodeBackgroundColor);
         setForeground(Color.WHITE);
+        setCaretColor(Color.WHITE);  
         setFont(getFont().deriveFont(18f));
         addStringListener();
     }
