@@ -9,7 +9,6 @@ import java.awt.*;
 public class InputPanel extends JPanel {
     Controller controller;
     private AddButton addButton = new AddButton(this::addExpressionWriter);
-    FunctionGrapher grapher;
 
     public InputPanel(Controller controller) {
         this.controller = controller;

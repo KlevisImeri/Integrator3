@@ -38,7 +38,7 @@ public class Menu extends JMenuBar {
         setBorder(null);
     }
 
-    private void openFile() {
+    void openFile() {
         if (file == null) {
             askToSaveExistingFile();
         }
@@ -48,7 +48,7 @@ public class Menu extends JMenuBar {
         }
     }
 
-    private void saveFile() {
+    void saveFile() {
         if (file == null) {
             saveAsFile();
         } else {
@@ -56,7 +56,7 @@ public class Menu extends JMenuBar {
         }
     }
 
-    private void saveAsFile() {
+    void saveAsFile() {
         if (openFileChooser()) {
             controller.writeExpressions(file);
         }

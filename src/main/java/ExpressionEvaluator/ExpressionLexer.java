@@ -49,7 +49,7 @@ public class ExpressionLexer implements Lexer {
         this.expression = expression;
     }
 
-    public String getExpression(){
+    public String getExpression() {
         return this.expression;
     }
 

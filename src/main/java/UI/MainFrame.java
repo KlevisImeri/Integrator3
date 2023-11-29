@@ -2,18 +2,21 @@ package UI;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-
 import java.awt.*;
+import java.awt.event.*;
 import data.Controller;
 
 public class MainFrame extends JFrame {
+    private static final int WIDTH = 1500;
+    private static final int HEIGHT = 1000;
+    private static final Color LIGHTBLACK = new Color(30, 31, 32);
     Controller controller;
     FunctionGrapher fGrapher;
     InputPanel inputPanel;
     JSplitPane splitPane;
-    private static final Color LIGHTBLACK = new Color(30, 31, 32);
-    private static final Color BLACK = new Color(15, 15, 15);
-    public MainFrame(Controller controller, int WIDTH, int HEIGHT) {
+    Menu menu;
+
+    public MainFrame(Controller controller) {
         super("Function Grapher");
         
         UIManager.put("PopupMenu.border", new LineBorder(new Color(15,15,15)));
@@ -28,16 +31,18 @@ public class MainFrame extends JFrame {
         this.fGrapher = new FunctionGrapher(controller);
         this.inputPanel = new InputPanel(controller);
         this.splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, inputPanel, fGrapher);
-        
+        this.menu = new Menu(controller);
+
         controller.addCallbackRun(this.fGrapher::repaint);
         controller.addCallbackReload(this.inputPanel::update);
         
         CustomSplitPane.setCleanSplitUI(splitPane);
         
         add(splitPane, BorderLayout.CENTER);
-        setJMenuBar(new Menu(controller));
+        setJMenuBar(menu);
         getJMenuBar().setBorder(null);
         
+        addWindowListeners();
         setSize(WIDTH, HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -51,6 +56,13 @@ public class MainFrame extends JFrame {
                 | IllegalAccessException  e) {
             e.printStackTrace();
         }
-        
+    }
+
+    public void addWindowListeners() {
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent evt) {
+                menu.saveFile();
+            }
+        });
     }
 }
