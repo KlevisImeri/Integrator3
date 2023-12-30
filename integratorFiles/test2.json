@@ -1,1 +1,1 @@
-{"expressions":[{"expression":"cos(3x)+sin(x^2)","color":[255,51,102]},{"expression":"tan(x)\/e^2","color":[0,255,153]},{"expression":"x^(2\/3)+0.9(3.3-x^2)^(1\/2)sin(10pi*x)","color":[0,204,204]}]}
+{"expressions":[{"expression":"x^(2\/3)+0.9(3.3-x^2)^(1\/2)sin(10pi*x)","color":[0,204,204]},{"expression":"cos(3x)+sin(x^2)","color":[255,51,102]},{"expression":"tan(x)\/e^2","color":[153,255,102]},{"expression":"e^x","color":[255,255,51]}]}
