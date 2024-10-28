@@ -1,4 +1,4 @@
-# SimpleFunc
+# SimFN
 
 This program is a powerful graphic calculator that takes strings of valid function expressions and beautifully plots the functions in the selected colors. With features like zoom in and out, it allows you to explore and analyze the graphs in detail.
 
