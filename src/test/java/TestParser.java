@@ -3,7 +3,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import expressionEvaluator.ExpressionEvaluator;
+import Evaluator.ExpressionEvaluator;
+
 import java.util.Arrays;
 import java.util.Collection;
 

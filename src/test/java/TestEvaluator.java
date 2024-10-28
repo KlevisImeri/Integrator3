@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import expressionEvaluator.ExpressionEvaluator;
+import Evaluator.ExpressionEvaluator;
 
 @RunWith(Parameterized.class)
 public class TestEvaluator {

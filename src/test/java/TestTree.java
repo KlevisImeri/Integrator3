@@ -1,7 +1,9 @@
 import static org.junit.Assert.*;
-import expressionEvaluator.Tree;
+
 import org.junit.Before;
 import org.junit.Test;
+
+import Evaluator.Tree;
 
 public class TestTree {
 
